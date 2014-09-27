@@ -40,7 +40,7 @@ get '/*.png' do |name|
 end
 
 # mail configuration
-options = { :address              => ENV["SMPT_SERVER"]   "smtp.gmail.com",
+options = { :address              => ENV["SMPT_SERVER"],
             :port                 => 587,
             :domain               => ENV["SMTP_DOMAIN"],
             :user_name            => ENV["SMPT_USERNAME"],
