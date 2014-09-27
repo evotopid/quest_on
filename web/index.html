@@ -5,6 +5,9 @@
   <link rel="stylesheet" href="/web.css">
   <script src="/jquery.js"></script>
   <script src="/survey.js"></script>
+  <script src="/page.js"></script>
+  <script src="/page_item.js"></script>
+  
   <script>
   var $directory        = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
   var $currentPage      = null;
@@ -156,13 +159,8 @@
     $currentPage = $survey.pages[index];
     $currentValuesSaved = false;
     
-    last_page = ($currentPageIndex == ($survey.pages.length-1));
-    
     // create html
-    new_html = "";
-    for (i=0; i<$currentPage.items.length; i++) {
-      new_html += html_for_item($currentPage.items[i]);
-    }
+    new_html = $currentPage.getHTML();
     
     // check if there is a timelimit to be set or unset
     if ($currentTimelimit != null){
@@ -180,8 +178,8 @@
       }
     }
     
-    // action handler
-    if (!last_page){
+    // if not last page
+    if ($currentPageIndex != ($survey.pages.length-1)){
       if ($currentPage.action == "user") {
         // add navigation
         new_html += '<div class="nextbutton">';
@@ -223,38 +221,6 @@
     }).fail(function(){
       $("#transfer_progress").html(_("An error occured while transmitting your answers.")+"<input type='button' onclick='submit_results();' value='"+_("Try again")+"'>");
     });
-  }
-  
-  function html_for_item(item) {
-    if (item.type == "textmessage") {
-      html = '<div class="textmessage">';
-      html += item.content;
-      html += "</div>";
-      return html;
-    } else if (item.type == "image") {
-      html = '<div class="image">';
-      html += '<img src="/'+item.path+'">';
-      html += '</div>';
-      return html;
-    } else if (item.type == "multiplechoice") {
-      html = '<div class="multiplechoice">';
-      for (answer_id in item.answers) {
-        answer_text = item.answers[answer_id];
-        html += '<label><input type="radio" name="'+item.id+'" value="'+answer_id+'"> '+answer_text+"</label><br>";
-      }
-      html += '</div>';
-      return html;
-    } else if (item.type == "textinput") {
-      html = '<div class="textinput">';
-      html += '<input type="text" name="'+item.id+'">';
-      html += '</div>';
-      return html;
-    } else {
-      console.log("ERROR:");
-      console.log(item);
-      alert("Fehler im Fragen file! Unbekannter Typ: '"+item.type+"'");
-      return null;
-    }
   }
   
   function preload_images(images, callback) {
