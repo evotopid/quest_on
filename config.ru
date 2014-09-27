@@ -1,3 +1,3 @@
-require_relative './lib/server.rb'
+require_relative './lib/application.rb'
 
-run QuestOn
+run QuestOn::Application
