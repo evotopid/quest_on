@@ -8,6 +8,17 @@ Please note that while this documentation is written in English the main text ou
 is German. Localization for strings displayed to users will be added in a future release.
 
 
+## TODO
+- Organize the left Javascript in index.html
+- Replace the current concept of timers and make a better one (the distinction between page, timelimit_start and timelimit_end just looks like a bad design chose...)
+- Minimize all Javascript files into one for performance
+- Show a spinning wheel while loading things at the beginning
+- Preload images on all platforms (currently only works in Webkit)
+- Add multiple export methods
+- Improve Docs
+- Interactive editor for survey.json files
+- Service to host survey.json files online
+- Make a real relase
 
 # Server Configuration
 Quest_on is a standalone ruby application which bundles it's own rack interface so it can be easily
