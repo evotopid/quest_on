@@ -90,9 +90,9 @@ module QuestOn
     end
 
     # Survey
-    get '/pages.json' do
+    get '/survey.json' do
       content_type "application/json"
-      File.read("pages.json")
+      File.read("survey.json")
     end
     
     # Localization

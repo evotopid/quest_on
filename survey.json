@@ -1,0 +1,33 @@
+{
+  "title": "Quest_on capability test",
+  "items": [
+    {"type": "page", "items": [
+      {"type": "textmessage", "content": "Hello dear participant, please enter your code:"},
+      {"type": "textinput", "id": "field_code"}
+    ], "action": "user"},
+  
+    {"type": "timelimit_start", "seconds": "20"},
+    {"type": "page", "items": [
+      {"type": "textmessage", "content": "Showing a wonderful image for a couple seconds."},
+      {"type": "image", "path": "example1.png"},
+      {"type": "multiplechoice", "id": "rating1", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}
+    ], "action": "user"},
+    {"type": "timelimit_end"},
+  
+    {"type": "page", "items": [{"type": "image", "path": "example1.png"}], "action": "3s"},
+    {"type": "page", "items": [{"type": "image", "path": "example2.png"}], "action": "3s"},
+    {"type": "page", "items": [{"type": "image", "path": "example3.png"}], "action": "3s"},
+  
+    {"type": "page", "items": [
+      {"type": "textmessage", "content": "Now you can choose."},
+      {"id": "rating2", "type": "multiplechoice", "answers": {"A": "Apples","B": "Bananas"}}
+    ], "action": "user"},
+  
+    {"type": "page", "items": [{"type": "image", "path": "example1.png"}, {"type": "multiplechoice", "id": "rating3", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "action": "3s"},
+    {"type": "page", "items": [{"type": "image", "path": "example2.png"}, {"type": "multiplechoice", "id": "rating4", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "action": "3s"},
+    {"type": "page", "items": [{"type": "image", "path": "example3.png"}, {"type": "multiplechoice", "id": "rating5", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "action": "3s"},
+  
+    {"type": "page", "items": [{"type": "textmessage", "content": "Thank you very much for your participation."}]}
+  ]
+}
+
