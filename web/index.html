@@ -13,10 +13,8 @@
   var $currentPage      = null;
   var $currentPageIndex = null;
   var $currentTimer     = null;
-  var $results          = new Array;
   var $finished         = false;
   var $currentTimelimit = null;
-  var $currentValuesSaved = false;
   
   var $survey = null;
   var $strings = null;
@@ -68,33 +66,11 @@
     }
   }
   
-  function save_values() {
-    if (! $currentValuesSaved) {
-      // check for values to report
-      for(i=0; i<$currentPage.items.length; i++){
-        item = $currentPage.items[i];
-        if (item.type == "multiplechoice"){
-          result = new Object;
-          result.id = item.id;
-          result.value = $('input[name='+item.id+']:checked', '#container').val();
-          $results.push(result);
-        } else if (item.type == "textinput"){
-          result = new Object;
-          result.id = item.id;
-          result.value = $('input[name='+item.id+']', '#container').val();
-          $results.push(result);
-        }
-      }
-      
-      $currentValuesSaved = true;
-    }
-  }
-  
   function next_page(page_number) {
     // stop timer if still running
     clearTimeout($currentTimer);
     
-    save_values();
+    $currentPage.saveValues();
     
     // load the next page if existing
     if (page_number != null){
@@ -150,7 +126,7 @@
     html += '</div>';
     
     timelimit_reset();
-    save_values();
+    $currentPage.saveValues();
     $("#container").html(html);
   }
   
@@ -213,7 +189,7 @@
   // submits results to server
   function submit_results() {
     data_to_send = new Object;
-    data_to_send.results = JSON.stringify($results);
+    data_to_send.results = JSON.stringify($survey.getResults());
     
     $.post($directory+"/store", data_to_send).done(function(){
       $finished = true;

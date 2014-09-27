@@ -1,4 +1,4 @@
-(function(){
+(function(window, $){
   window.PageItem = function(data){
     this.type    = data.type;
     this.content = data.content;
@@ -24,7 +24,19 @@
     case "textinput":
       return '<div class="textinput"><input type="text" name="'+this.id+'"></div>';
     default:
-      console.error("Trying to get HTML for uknown PageItem type: "+this.type);
+      console.error("Trying to get HTML for unknown PageItem type: "+this.type);
     }
-  };  
-})(window);
+  };
+  
+  // If there is a key value pair for the item in the window's current DOM an object(id, value) will be returned.
+  // Otherwise it will be null 
+  window.PageItem.prototype.getKeyValuePair = function(){
+    if (this.type == "textinput") {
+      return {id: this.id, value: $('input[name='+this.id+']', '#container').val()};
+    } else if (this.type == "multiplechoice") {
+      return {id: this.id, value: $('input[name='+this.id+']:checked', '#container').val()};
+    } else {
+      return null;
+    }
+  };
+})(window, jQuery);
