@@ -56,13 +56,11 @@
     }
   }
   
-  
-  
   function preload_images(images, callback) {
     var remaining_images_to_load = images.length;
     var loading_objects = new Array;
     for (i=0; i<images.length; i++){
-      image = new Image();
+      var image = new Image();
       image.onload = function() {
         remaining_images_to_load--;
         if (remaining_images_to_load <= 0) {
