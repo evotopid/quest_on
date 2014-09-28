@@ -7,16 +7,10 @@
   <script src="/survey.js"></script>
   <script src="/page.js"></script>
   <script src="/page_item.js"></script>
+  <script src="/timelimit.js"></script>
   
   <script>
-  var $directory        = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
-  var $currentPage      = null;
-  var $currentPageIndex = null;
-  var $currentTimer     = null;
-  var $finished         = false;
-  var $currentTimelimit = null;
-  
-  var $survey = null;
+  var $directory = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
   var $strings = null;
   
   $(document).ready(function(){
@@ -36,29 +30,23 @@
         alert("Verbindungsfehler");
       });
       
-      loadSurvey("survey.json", function(survey){ // TODO error handling
-        $survey = survey;
-        document.title = $survey.title;
-        $("#title").html($survey.title);
-        start_application();
+      loadSurvey("survey.json", function(s){ // TODO error handling
+        window.survey = s;
+        document.title = survey.title;
+        $("#title").html(survey.title);
+        survey.run();
       });
     });
   });
   
-  // show notification before the user closes
+  // Show notification before the user closes
   window.onbeforeunload = function(){
-    if ($finished){
+    if (survey.finished){
       return null;
     } else {
       return _("If you proceed closing this page, your results won't be stored.");
-    } 
+    }
   }
-  
-  function start_application(){
-    timelimit_update();
-    load_page(0);
-  }
-  
   // returns a localizd version of string if possible or just str otherwise
   function _(str){
     if ($strings[str] != undefined) {
@@ -68,138 +56,7 @@
     }
   }
   
-  function next_page(page_number) {
-    // stop timer if still running
-    clearTimeout($currentTimer);
-    
-    $currentPage.saveValues();
-    
-    // load the next page if existing
-    if (page_number != null){
-      // load the next page and then after that recursion of next_page so that pages will be loaded until the next page is reached
-      // this is to make sure that empty items appear in the list if the user hasn't finished filling out the test yet
-      if ($currentPageIndex+1 < $survey.pages.length){
-        load_page($currentPageIndex + 1);
-        
-        // if we didn't reach the page yet
-        if ($currentPageIndex < page_number){
-          next_page(page_number);
-        }
-      } else {
-        alert(_("You reached the end of the survey."));
-      }
-    } else {
-      // simply load the next page as if there was nothing special
-      if ($currentPageIndex+1 < $survey.pages.length){
-        load_page($currentPageIndex + 1);
-      } else {
-        alert(_("You reached the end of the survey."));
-      }
-    }
-  }
   
-  function timelimit_reset() {
-    $currentTimelimit = null;
-    $("#time_left").html("");
-  }
-  
-  function timelimit_update() {
-    if ($currentTimelimit != null) {
-      time_left = Math.round((($currentTimelimit.max_seconds*1000) - (new Date().getTime() - $currentTimelimit.started))/1000);
-      if (time_left > 0 ) {
-        // display left time
-        $("#time_left").html(_("Time left:")+" "+time_left+"s")
-      } else {
-        // timelimit reached
-        timelimit_reached();
-      }
-    }
-    
-    setTimeout(function(){timelimit_update();}, 500);
-  }
-  
-  function timelimit_reached(){
-    clearTimeout($currentTimer);
-    $currentTimer = null;
-    
-    html = "<div class='textmessage'>"+_("You ran out of time.")+"</div>"
-    html += '<div class="nextbutton">';
-    html += '<input type="button" onclick="next_page('+($currentTimelimit.page_last+1)+');" value="'+_("Continue")+'">';
-    html += '</div>';
-    
-    timelimit_reset();
-    $currentPage.saveValues();
-    $("#container").html(html);
-  }
-  
-  function load_page(index){
-    $currentPageIndex = index;
-    $currentPage = $survey.pages[index];
-    $currentValuesSaved = false;
-    
-    // create html
-    new_html = $currentPage.getHTML();
-    
-    // check if there is a timelimit to be set or unset
-    if ($currentTimelimit != null){
-      if ($currentTimelimit.page_last < $currentPageIndex){
-        timelimit_reset();
-      }
-    }
-    if ($currentTimelimit == null && $survey.timelimits.length > 0){
-      if ($survey.timelimits[0].page_first == $currentPageIndex){
-        $currentTimelimit = $survey.timelimits[0];
-        $currentTimelimit.started = new Date().getTime();
-        
-        // delete from the list
-        $survey.timelimits.splice(0,1);
-      }
-    }
-    
-    // if not last page
-    if ($currentPageIndex != ($survey.pages.length-1)){
-      if ($currentPage.action == "user") {
-        // add navigation
-        new_html += '<div class="nextbutton">';
-        new_html += '<input type="button" onclick="next_page();" value="'+_("Continue")+'">';
-        new_html += '</div>';
-      } else {
-        // add timer
-        regex = /([0-9]+)s/;
-        r = regex.exec($currentPage.action);
-      
-        if (r != null) {
-          seconds = parseInt(r[1]);
-          $currentTimer = setTimeout(function(){ next_page(); }, seconds*1000);
-        } else {
-          console.log("ERROR");
-          console.log($currentPage);
-          alert("Fehler im Fragen file! Ungültige Aktion: "+$currentPage.action);
-        }
-      }
-    } else {
-      $("#container").append("<div id='transfer_progress'>"+_("Your answers are being transmitted to the server...")+"</div>");
-      
-      // submit all data now
-      submit_results();
-    }
-    
-    // replace container content...
-    $("#container").html(new_html);
-  }
-  
-  // submits results to server
-  function submit_results() {
-    data_to_send = new Object;
-    data_to_send.results = JSON.stringify($survey.getResults());
-    
-    $.post($directory+"/store", data_to_send).done(function(){
-      $finished = true;
-      $("#transfer_progress").html(_("Your answers have been transmitted successfully."));
-    }).fail(function(){
-      $("#transfer_progress").html(_("An error occured while transmitting your answers.")+"<input type='button' onclick='submit_results();' value='"+_("Try again")+"'>");
-    });
-  }
   
   function preload_images(images, callback) {
     var remaining_images_to_load = images.length;
