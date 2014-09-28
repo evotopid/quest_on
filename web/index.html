@@ -38,6 +38,8 @@
       
       loadSurvey("survey.json", function(survey){ // TODO error handling
         $survey = survey;
+        document.title = $survey.title;
+        $("#title").html($survey.title);
         start_application();
       });
     });
@@ -216,10 +218,10 @@
   }
   </script>
   
-  <title>Umfrage</title>
+  <title>Survey</title>
 </head>
 <body>
-  <h1 id="title">Umfrage</h1>
+  <h1 id="title">Survey</h1>
   <div id="time_left"></div>
   <div id="container"></div>
 </body>
