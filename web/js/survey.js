@@ -19,8 +19,8 @@
     }
   }
   
-  window.Survey.prototype.getResults(){
-    results = new Array();
+  window.Survey.prototype.getResults = function(){
+    var results = new Array();
     for (var i=0; i<this.pages.length; i++){
       // Add the page's results to the end of the array
       results = results.concat(this.pages[i].values);
