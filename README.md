@@ -9,7 +9,6 @@ is German. Localization for strings displayed to users will be added in a future
 
 
 ## TODO
-- Organize the left Javascript in index.html
 - Minimize all Javascript files into one for performance
 - Preload images on all platforms (currently only works in Webkit)
 - Add multiple export methods

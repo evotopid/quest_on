@@ -27,6 +27,7 @@
     }).fail(function(error){
       console.error("Error while loading survey.");
       console.error(error);
+      alert("Error while loading survey.");
       callback(undefined);
     });
   }
@@ -87,4 +88,12 @@
     });
   }
   
+  // Show notification before the user closes
+  window.onbeforeunload = function(){
+    if (window.survey.finished){
+      return null;
+    } else {
+      return _("If you proceed closing this page, your results won't be stored.");
+    }
+  }
 })(window, jQuery);
