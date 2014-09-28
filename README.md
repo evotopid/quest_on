@@ -9,8 +9,6 @@ is German. Localization for strings displayed to users will be added in a future
 
 
 ## TODO
-- Minimize all Javascript files into one for performance
-- Preload images on all platforms (currently only works in Webkit)
 - Add multiple export methods
 - Improve Docs
 - Interactive editor for survey.json files

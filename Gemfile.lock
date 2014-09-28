@@ -3,6 +3,8 @@ GEM
   specs:
     daemons (1.1.9)
     eventmachine (1.0.3)
+    execjs (2.2.1)
+    json (1.8.1)
     mail (2.6.1)
       mime-types (>= 1.16, < 3)
     mime-types (2.3)
@@ -25,6 +27,9 @@ GEM
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
     tilt (1.4.1)
+    uglifier (2.5.3)
+      execjs (>= 0.3.0)
+      json (>= 1.8.0)
 
 PLATFORMS
   ruby
@@ -34,3 +39,4 @@ DEPENDENCIES
   rubyXL (~> 3.2.3)
   sinatra (~> 1.4.5)
   thin
+  uglifier

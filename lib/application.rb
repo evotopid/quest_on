@@ -18,8 +18,7 @@ module QuestOn
       content_type "text/html"
       File.read("web/index.html")
     end
-
-    # Scripts
+    
     get '/*.js' do |name|
       content_type "text/javascript"
       File.read("web/js/#{name}.js")
