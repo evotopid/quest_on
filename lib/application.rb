@@ -58,9 +58,7 @@ module QuestOn
     # store!
     post '/store' do
       results = JSON.parse(params["results"])
-  
-      temp_file = "tmp/" + (rand*10**40).to_i.to_s(36) + ".xlsx"
-  
+      
       # excel
       workbook  = RubyXL::Workbook.new
       worksheet = workbook[0]
@@ -71,8 +69,7 @@ module QuestOn
         row += 1
       end
       worksheet.change_column_bold(0, true)
-      workbook.write(temp_file)
-  
+      
       # email
       message = Mail.new do 
         from     ENV["SOURCE_EMAIL"]
@@ -80,11 +77,9 @@ module QuestOn
         subject  'Neues Umfrageresultat'
         body     'Weitere Informationen in den angehängten Dateien.'
       end
-      message.attachments["werte.xlsx"] = File.read(temp_file)
+      message.attachments["werte.xlsx"] = workbook.stream.read
       message.deliver
-  
-      File.unlink temp_file
-  
+    
       "ok"  
     end
 
