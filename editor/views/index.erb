@@ -1,0 +1,18 @@
+<h2>Existing Surveys</h2>
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Title</th>
+        <th>Actions</th>
+    </tr>
+    <% surveys.each do |s| %>
+        <tr>
+            <td><%= s["id"] %></td>
+            <td><%= s["title"] %></td>
+            <td><a href="/edit/<%= s["id"] %>">Edit</a></td>
+        </tr>
+    <% end %>
+</table>
+
+<a href="/create">Create new survey.</a>
+
