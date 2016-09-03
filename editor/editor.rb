@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 require 'sinatra/base'
 require 'json'
+require 'coffee-script'
 
 module QuestOnEditor
     SURVEY_DIR = File.join(File.dirname(__FILE__), "surveys")
+    SCRIPTS_DIR = File.join(File.dirname(__FILE__), "scripts")
 
     class Application < Sinatra::Base
-        "/" do
+        get "/" do
             # List existing surveys.
             surveys = Dir["#{SURVEY_DIR}/*.json"].map{|path| get_survey_metadata(path: path)}
             puts surveys.inspect
@@ -65,6 +67,20 @@ module QuestOnEditor
 
                 # Redirect user to editing page.
                 redirect to("/edit/#{identifier}")
+            end
+        end
+
+        get "/js/*.js" do |filename|
+            content_type "application/javascript"
+            filename.gsub!(/[^a-zA-Z0-9_-]/, "")
+            jsfile = File.join(SCRIPTS_DIR, filename + ".js")
+            csfile = File.join(SCRIPTS_DIR, filename + ".coffee")
+            if File.exist? jsfile
+                File.read jsfile
+            elsif File.exist? csfile
+                CoffeeScript.compile File.read(csfile)
+            else
+                [404, 'alert("script not found")']
             end
         end
 
