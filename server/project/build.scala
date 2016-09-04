@@ -31,7 +31,11 @@ object Quest_onBuild extends Build {
         "ch.qos.logback" % "logback-classic" % "1.1.5" % "runtime",
         "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
-        "org.json4s" %% "json4s-jackson" % "3.4.0"
+        "org.json4s" %% "json4s-jackson" % "3.4.0",
+
+        // Database
+        "org.postgresql" % "postgresql" % "9.4.1209",
+        "org.xerial" % "sqlite-jdbc" % "3.8.11.2"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(

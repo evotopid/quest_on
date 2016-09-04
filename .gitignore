@@ -3,6 +3,7 @@ tmp/
 .DS_Store
 .ruby-version
 *.swp
+*.sqlite
 
 /server/target
 /server/project/target

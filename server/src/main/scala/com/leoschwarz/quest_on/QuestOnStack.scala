@@ -3,13 +3,8 @@ package com.leoschwarz.quest_on
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
 import scalate.ScalateSupport
-import org.fusesource.scalate.{Binding, TemplateEngine}
-import org.fusesource.scalate.layout.DefaultLayoutStrategy
-import javax.servlet.http.HttpServletRequest
-
 import org.json4s.{DefaultFormats, Formats}
 
-import collection.mutable
 
 trait QuestOnStack extends ScalatraServlet with ScalateSupport with JacksonJsonSupport {
 
