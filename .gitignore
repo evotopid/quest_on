@@ -2,4 +2,10 @@ log/
 tmp/
 .DS_Store
 .ruby-version
+*.swp
+
+/server/target
+/server/project/target
+/server/project/project/target
+/server/.idea
 
