@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-
 require 'uglifier'
+require 'coffee-script'
+
 js_dir = File.join(File.dirname(__FILE__), "..", "src", "main", "webapp", "js", "")
 bundle = File.join(js_dir, "bundle.js")
 bundle_min = File.join(js_dir, "bundle.min.js")
@@ -13,6 +14,13 @@ script = ""
 Dir["#{js_dir}*.js"].sort.each do |f|
   script += "/* File #{File.basename(f)} */\n"
   script += File.read(f)
+  script += "\n\n"
+end
+
+Dir["#{js_dir}*.coffee"].sort.each do |f|
+  puts "Compiling CoffeeScript file #{File.basename(f)}."
+  script += "/* File #{File.basename(f)} */\n"
+  script += CoffeeScript.compile File.read(f)
   script += "\n\n"
 end
 

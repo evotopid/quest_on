@@ -1,0 +1,12 @@
+<%@ val survey_id: String %>
+<h1 id="title">Survey</h1>
+<div id="time_left"></div>
+<div id="container">
+<div class='loader'>&nbsp;</div>
+</div>
+
+<script>
+    loadApplication("<%= survey_id %>", function(){
+        window.survey.run();
+    });
+</script>

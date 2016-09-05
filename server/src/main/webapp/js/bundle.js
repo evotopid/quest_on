@@ -10075,362 +10075,409 @@ return jQuery;
 } );
 
 
-/* File loader.js */
-(function(window, $){
-  window.loadApplication = function(callback){
-    window.loadLocalization(function(){
-      loadImages(function(){
-        loadSurvey("survey.json", function(s){
+/* File loader.coffee */
+(function() {
+  window.loadApplication = function(surveyId, callback) {
+    var loadImages, loadLocalization, loadSurvey;
+    loadImages = function(cb) {
+      return $.ajax({
+        url: "/all_images.json"
+      }).done(function(images) {
+        var image, remainingImages, src;
+        remainingImages = images.length;
+        return window.loadingObjects = (function() {
+          var i, len, results;
+          results = [];
+          for (i = 0, len = images.length; i < len; i++) {
+            src = images[i];
+            image = new Image;
+            image.onload = function() {
+              remainingImages--;
+              if (remainingImages <= 0) {
+                cb();
+              }
+              return null;
+            };
+            image.src = src;
+            results.push(image);
+          }
+          return results;
+        })();
+      }).fail(function(error) {
+        console.error("Preloading images failed:");
+        console.error(error);
+        return cb();
+      });
+    };
+    loadLocalization = function(cb) {
+      return $.ajax({
+        url: "/strings.json"
+      }).done(function(strings) {
+        window.$strings = strings;
+        return cb();
+      }).fail(function(error) {
+        console.error("Failed to load strings.json from server.");
+        window.$strings = {};
+        return cb();
+      });
+    };
+    loadSurvey = function(cb) {
+      return $.ajax({
+        url: "/survey/" + surveyId + ".json"
+      }).done(function(data) {
+        return cb(new Survey(surveyId, data));
+      }).fail(function(error) {
+        console.error("Loading survey failed:");
+        console.error(error);
+        alert("Loading survey failed.");
+        return cb(void 0);
+      });
+    };
+    return loadLocalization(function() {
+      return loadImages(function() {
+        return loadSurvey(function(s) {
           window.survey = s;
           window.document.title = s.title;
-          callback();
+          return callback();
         });
       });
     });
-    
-    // Makes sure all images are preloaded
-    function loadImages(cb) {
-      $.ajax({
-        url: $directory+"/all_images.json"
-      }).done(function(images){
-        var remaining_images_to_load = images.length;
-        var loading_objects = new Array;
-        for (i=0; i<images.length; i++){
-          var image = new Image();
-          image.onload = function() {
-            remaining_images_to_load--;
-            if (remaining_images_to_load <= 0) {
-              cb();
-            }
-          }
-          image.src = images[i];
-          loading_objects.push(image);
-        }
-      }).fail(function(error){
-        console.error("Couldn't preload images");
-        console.error(error);
-        cb();
-      });
-    }
-  }
-})(window, jQuery);
+  };
 
-/* File localization.js */
-(function(){
-  window.loadLocalization = function(callback){
-    $.ajax({
-      url: window.$directory+"/strings.json"
-    }).done(function(strings){
-      window.$strings = strings;
-      callback();
-    }).fail(function(error){
-      console.error("Failed to load strings.json from server...");
-      window.$strings = new Object();
-    });
-  }
-  
-  // Returns a localizd version of str if possible or just str otherwise
-  window._ = function(str){
-    if (window.$strings[str] !== undefined) {
+}).call(this);
+
+
+/* File localization.coffee */
+(function() {
+  window._ = function(str) {
+    if (window.$strings[str] != null) {
       return window.$strings[str];
     } else {
       return str;
     }
-  }
-})(window, jQuery);
-
-
-/* File page.js */
-(function(window, $){
-  window.Page = function(data, survey){
-    this.actions = data.actions;
-    this.items = new Array();
-    this.values = new Array();
-    this.survey = survey;
-    
-    if (data.timelimit === undefined || data.timelimit === null){
-      this.timelimit = null;
-    } else {
-      this.timelimit = new window.Timelimit(data.timelimit, this);
-    }
-    
-    for (var i=0; i<data.items.length; i++){
-      this.items.push(new window.PageItem(data.items[i]));
-    }
   };
 
-  window.Page.prototype.getHTML = function(){
-    html = "";
-    for (var i=0; i<this.items.length; i++){
-      html += this.items[i].getHTML();
-    }
-    
-    for (var i=0; i<this.actions.length; i++){
-      action = this.actions[i];
-      if (action == "continue"){
-        html += '<div class="nextbutton">';
-        html += '<input type="button" onclick="survey.nextPage();" value="'+window._("Continue")+'">';
-        html += '</div>';
+}).call(this);
+
+
+/* File page.coffee */
+(function() {
+  window.Page = (function() {
+    function Page(data, survey) {
+      var item;
+      this.survey = survey;
+      this.actions = data.actions;
+      this.values = [];
+      if (data.timelimit == null) {
+        this.timelimit = null;
+      } else {
+        this.timelimit = new window.Timelimit(data.timelimit, this);
       }
+      this.items = (function() {
+        var i, len, ref, results;
+        ref = data.items;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          item = ref[i];
+          results.push(new window.PageItem(item));
+        }
+        return results;
+      })();
     }
-    
-    return html;
-  };
-  
-  window.Page.prototype.saveValues = function(){
-    this.values = new Array();
-    for (var i=0; i<this.items.length; i++){
-      pair = this.items[i].getKeyValuePair();
-      if (pair != null) {
-        this.values.push(pair);
+
+    Page.prototype.getHTML = function() {
+      var action, html, i, item, j, len, len1, ref, ref1;
+      html = "";
+      ref = this.items;
+      for (i = 0, len = ref.length; i < len; i++) {
+        item = ref[i];
+        html += item.getHTML();
       }
-    }
-  };
-  
-  window.Page.prototype.startTimer = function(){
-    // Only if the last timer was in a different group than this one we need to start the new one.
-    if (this.survey.currentTimelimit == null) {
-      if (this.timelimit != null) {
-        this.survey.currentTimelimit = this.timelimit;
-        this.survey.currentTimelimit.start();
-      }
-    } else if (this.survey.currentTimelimit.group == null || this.survey.currentTimelimit.group != this.timelimit.group) {
-      this.survey.currentTimelimit.stop();
-      this.survey.currentTimelimit = this.timelimit;
-      if (this.timelimit != null) {
-        this.survey.currentTimelimit.start();
-      }
-    } else {
-      this.survey.currentTimelimit.page = this;
-    }
-  }
-  
-  window.Page.prototype.stopTimer = function(){
-    if (this.survey.currentTimelimit != null) {
-      this.survey.currentTimelimit.stop();
-    } 
-  }
-  
-  window.Page.prototype.timelimitReached = function(){
-    if (this.survey.currentTimelimit.timeoutnotice) {
-      console.log("X");
-      html = "<div class='textmessage'>"+_("You ran out of time.")+"</div>"
-      html += '<div class="nextbutton">';
-      html += '<input type="button" onclick="survey.nextPage();" value="'+_("Continue")+'">';
-      html += '</div>';
-      $("#container").html(html);
-    } else {
-      this.survey.nextPage();
-    }
-  }
-})(window, jQuery);
-
-
-/* File page_item.js */
-(function(window, $){
-  window.PageItem = function(data){
-    this.type    = data.type;
-    this.content = data.content;
-    this.path    = data.path;
-    this.id      = data.id;
-    this.answers = data.answers;
-  };
-
-  window.PageItem.prototype.getHTML = function(){
-    switch (this.type) {
-    case "textmessage":
-      return '<div class="textmessage">'+this.content+'</div>';
-    case "image":
-      return '<div class="image"><img src="/img/'+this.path+'"></div>';
-    case "multiplechoice":
-      html = '<div class="multiplechoice">';
-      for (answer_id in this.answers) {
-        answer_text = this.answers[answer_id];
-        html += '<label><input type="radio" name="'+this.id+'" value="'+answer_id+'"> '+answer_text+"</label><br>";
-      }
-      html += '</div>';
-      return html;
-    case "textinput":
-      return '<div class="textinput"><input type="text" name="'+this.id+'"></div>';
-    default:
-      console.error("Trying to get HTML for unknown PageItem type: "+this.type);
-    }
-  };
-  
-  // If there is a key value pair for the item in the window's current DOM an object(id, value) will be returned.
-  // Otherwise it will be null 
-  window.PageItem.prototype.getKeyValuePair = function(){
-    if (this.type == "textinput") {
-      return {id: this.id, value: $('input[name='+this.id+']', '#container').val()};
-    } else if (this.type == "multiplechoice") {
-      return {id: this.id, value: $('input[name='+this.id+']:checked', '#container').val()};
-    } else {
-      return null;
-    }
-  };
-})(window, jQuery);
-
-
-/* File survey.js */
-(function(window, $){
-  window.Survey = function(data) {
-    this.title = data.title;
-    this.pages = new Array();
-    this.currentTimelimit = null;
-    this.finished = false;
-    
-    for (var i=0; i<data.pages.length; i++) {
-      page = data.pages[i];
-      this.pages.push(new window.Page(page, this));  
-    }
-  }
-  
-  window.Survey.prototype.getResults = function(){
-    var results = new Array();
-    for (var i=0; i<this.pages.length; i++){
-      // Add the page's results to the end of the array
-      results = results.concat(this.pages[i].values);
-    }
-    return results;
-  }
-  
-  // Helper to load the Survey Object
-  window.loadSurvey = function(path, callback) {
-    $.ajax({url: path}).done(function(data){
-      callback(new Survey(data));
-    }).fail(function(error){
-      console.error("Error while loading survey.");
-      console.error(error);
-      alert("Error while loading survey.");
-      callback(undefined);
-    });
-  }
-  
-  // Starts the survey in window
-  window.Survey.prototype.run = function(){
-    this.loadPage(0);
-    this.updateLoop();
-  }
-  
-  window.Survey.prototype.updateLoop = function() {
-    if (window.survey.currentTimelimit != null && window.survey.currentTimelimit.active) {
-      $("#time_left").html(_("Time left:")+" "+window.survey.currentTimelimit.secondsLeft()+"s")
-    } else {
-      $("#time_left").html("");
-    }
-    
-    window.setTimeout(window.survey.updateLoop, 500);
-  }
-  
-  window.Survey.prototype.nextPage = function(){
-    this.currentPage.stopTimer();
-    this.currentPage.saveValues();
-    
-    if (this.currentPageIndex+1 < this.pages.length){
-      this.loadPage(this.currentPageIndex+1);
-    } else {
-      alert(_("You reached the end of the survey."));
-    }
-  }
-  
-  window.Survey.prototype.loadPage = function(index){
-    this.currentPageIndex = index;
-    this.currentPage = this.pages[index];
-    
-    // Display the page
-    $("#container").html(this.currentPage.getHTML());
-    
-    // If it's the last page also display a transferprogress
-    if (this.currentPageIndex == this.pages.length-1) {
-      $("#container").append("<div id='transfer_progress'>"+window._("Your answers are being transmitted to the server...")+"</div>");
-      this.submitResults();
-    }
-    
-    // Start timer
-    this.currentPage.startTimer();
-  }
-  
-  window.Survey.prototype.submitResults = function(){
-    data = new Object;
-    data.results = JSON.stringify(this.getResults());
-    
-    $.post(window.$directory+"/store", data).done(function(){
-      this.finished = true;
-      $("#transfer_progress").html(_("Your answers have been transmitted successfully."));
-    }).fail(function(){
-      $("#transfer_progress").html(_("An error occured while transmitting your answers.")+"<br><input type='button' onclick='survey.submitResults();' value='"+_("Try again")+"'>");
-    });
-  }
-  
-  // Show notification before the user closes
-  window.onbeforeunload = function(){
-    if (window.survey.finished){
-      return null;
-    } else {
-      return _("If you proceed closing this page, your results won't be stored.");
-    }
-  }
-})(window, jQuery);
-
-
-/* File timelimit.js */
-(function(window){
-  window.Timelimit = function(data, page){
-    if (data.group === undefined) {
-      this.group = null;
-    } else {
-      this.group = data.group;
-    }
-    
-    if (data.seconds === undefined) {
-      console.error("Timelimit with undefined seconds attribute encountered in your survey.json file.");
-      alert("Timelimit with undefined seconds attribute encountered in your survey.json file.");
-    } else {
-      this.seconds = data.seconds;
-    }
-    
-    if (data.timeoutnotice === undefined) {
-      this.timeoutnotice = false;
-    } else {
-      this.timeoutnotice = data.timeoutnotice;
-    }
-    
-    this.page = page;
-    this.active = false;
-  }
-  
-  window.Timelimit.prototype.start = function(){
-    this.active = true;
-    this.startedAt = new Date().getTime();
-    this.update();
-  }
-  
-  window.Timelimit.prototype.stop = function(){
-    this.seconds = this.millisLeft() * 1000;
-    this.active = false;
-  }
-  
-  window.Timelimit.prototype.update = function(){
-    timelimit = this;
-    
-    window.setTimeout(function(){
-      if (timelimit.active){
-        if (timelimit.millisLeft() <= 0) {
-          timelimit.active = false;
-          timelimit.page.timelimitReached();
-        } else {
-          timelimit.update();
+      ref1 = this.actions;
+      for (j = 0, len1 = ref1.length; j < len1; j++) {
+        action = ref1[j];
+        if (action === "continue") {
+          html += '<div class="nextbutton">';
+          html += '<input type="button" onclick="survey.nextPage();" value="' + window._('Continue') + '">';
+          html += '</div>';
         }
       }
-    }, 300);
-  }
-  
-  window.Timelimit.prototype.secondsLeft = function(){
-    return Math.ceil(this.millisLeft() * 0.001);
-  }
-  
-  window.Timelimit.prototype.millisLeft = function(){
-    return this.seconds * 1000 - (new Date().getTime() - this.startedAt);
-  }
-})(window);
+      return html;
+    };
+
+    Page.prototype.saveValues = function() {
+      var i, item, len, pair, ref;
+      this.values = [];
+      ref = this.items;
+      for (i = 0, len = ref.length; i < len; i++) {
+        item = ref[i];
+        pair = item.getKeyValuePair();
+        if (pair != null) {
+          this.values.push(pair);
+        }
+      }
+      return null;
+    };
+
+    Page.prototype.startTimer = function() {
+      if (this.survey.currentTimelimit === null) {
+        if (this.timelimit != null) {
+          this.survey.currentTimelimit = this.timelimit;
+          this.survey.currentTimelimit.start();
+        }
+      } else if (this.survey.currentTimelimit.group === null || this.survey.currentTimelimit.group !== this.timelimit.group) {
+        this.survey.currentTimelimit.stop();
+        this.survey.currentTimelimit = this.timelimit;
+        if (this.timelimit != null) {
+          this.survey.currentTimelimit.start();
+        }
+      } else {
+        this.survey.currentTimelimit.page = this;
+      }
+      return null;
+    };
+
+    Page.prototype.stopTimer = function() {
+      if (this.survey.currentTimelimit != null) {
+        return this.survey.currentTimelimit.stop();
+      }
+    };
+
+    Page.prototype.timelimitReached = function() {
+      var html;
+      if (this.survey.currentTimelimit.timeoutnotice) {
+        console.log('X');
+        html = '<div class=\'textmessage\'>' + _('You ran out of time.') + '</div>';
+        html += '<div class="nextbutton">';
+        html += '<input type="button" onclick="survey.nextPage();" value="' + _('Continue') + '">';
+        html += '</div>';
+        return $('#container').html(html);
+      } else {
+        return this.survey.nextPage();
+      }
+    };
+
+    return Page;
+
+  })();
+
+}).call(this);
+
+
+/* File page_item.coffee */
+(function() {
+  window.PageItem = (function() {
+    function PageItem(data) {
+      this.type = data.type;
+      this.content = data.content;
+      this.path = data.path;
+      this.id = data.id;
+      this.answers = data.answers;
+    }
+
+    PageItem.prototype.getHTML = function() {
+      var answer_id, answer_text, html;
+      switch (this.type) {
+        case 'textmessage':
+          return "<div class='textmessage'>" + this.content + "</div>";
+        case 'image':
+          return "<div class='image'><img src='/img/" + this.path + "'></div>";
+        case 'multiplechoice':
+          html = '<div class="multiplechoice">';
+          for (answer_id in this.answers) {
+            answer_text = this.answers[answer_id];
+            html += "<label><input type='radio' name='" + this.id + "' value='" + answer_id + "'>" + answer_text + "</label><br>";
+            html += '</div>';
+          }
+          return html;
+        case 'textinput':
+          return '<div class="textinput"><input type="text" name="' + this.id + '"></div>';
+        default:
+          console.error('Trying to get HTML for unknown PageItem type: ' + this.type);
+          return null;
+      }
+    };
+
+    PageItem.prototype.getKeyValuePair = function() {
+      if (this.type === 'textinput') {
+        return {
+          id: this.id,
+          value: $("input[name=" + this.id + "]", '#container').val()
+        };
+      } else if (this.type === "multiplechoice") {
+        return {
+          id: this.id,
+          value: $("input[name=" + this.id + "]:checked", '#container').val()
+        };
+      } else {
+        return null;
+      }
+    };
+
+    return PageItem;
+
+  })();
+
+}).call(this);
+
+
+/* File survey.coffee */
+(function() {
+  window.Survey = (function() {
+    function Survey(id, data) {
+      var page;
+      this.id = id;
+      this.title = data.title;
+      this.currentTimelimit = null;
+      this.finished = false;
+      this.pages = (function() {
+        var i, len, ref, results1;
+        ref = data.pages;
+        results1 = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          page = ref[i];
+          results1.push(new window.Page(page, this));
+        }
+        return results1;
+      }).call(this);
+    }
+
+    Survey.prototype.run = function() {
+      this.loadPage(0);
+      return this.updateLoop();
+    };
+
+    Survey.prototype.getResults = function() {
+      var i, len, page, ref, results;
+      results = [];
+      ref = this.pages;
+      for (i = 0, len = ref.length; i < len; i++) {
+        page = ref[i];
+        results.concat(page.values);
+      }
+      return results;
+    };
+
+    Survey.prototype.updateLoop = function() {
+      if ((this.currentTimelimit != null) && this.currentTimelimit.active) {
+        $("#time_left").html(_("Time left:") + " " + this.currentTimelimit.secondsLeft() + "s");
+      } else {
+        $("#time_left").html("");
+      }
+      return window.setTimeout(((function(_this) {
+        return function() {
+          return _this.updateLoop();
+        };
+      })(this)), 500);
+    };
+
+    Survey.prototype.nextPage = function() {
+      this.currentPage.stopTimer();
+      this.currentPage.saveValues();
+      if (this.currentPageIndex + 1 < this.pages.length) {
+        return this.loadPage(this.currentPageIndex + 1);
+      } else {
+        return alert(_("You reached the end of the survey."));
+      }
+    };
+
+    Survey.prototype.loadPage = function(index) {
+      this.currentPageIndex = index;
+      this.currentPage = this.pages[index];
+      $("#container").html(this.currentPage.getHTML());
+      if (this.currentPageIndex === this.pages.length - 1) {
+        $("#container").append('<div id=\'transfer_progress\'>' + window._('Your answers are being transmitted to the server...') + '</div>');
+        this.submitResults();
+      }
+      return this.currentPage.startTimer();
+    };
+
+    Survey.prototype.submitResults = function() {
+      var data;
+      data = {
+        results: JSON.stringify(this.getResults())
+      };
+      return $.post("/store", data).done(function() {
+        this.finished = true;
+        return $("#transfer_progress").html(_("Your answers have been submitted successfully."));
+      }).fail(function() {
+        return $("#transfer_progress").html(_("An error occured while submitting your answers.") + '<br><input type=\'button\' onclick=\'survey.submitResults();\' value=\'' + _('Try again') + '\'>');
+      });
+    };
+
+    return Survey;
+
+  })();
+
+  window.onbeforeunload = function() {
+    if (window.survey.finished) {
+      return null;
+    } else {
+      return _('If you proceed closing this page, your results won\'t be stored.');
+    }
+  };
+
+}).call(this);
+
+
+/* File timelimit.coffee */
+(function() {
+  window.Timelimit = (function() {
+    function Timelimit(data, page) {
+      this.page = page;
+      this.group = data.group;
+      if (data.seconds != null) {
+        this.seconds = data.seconds;
+      } else {
+        console.error('Timelimit with undefined seconds attribute encountered in your survey.json file.');
+        alert('Timelimit with undefined seconds attribute encountered in your survey.json file.');
+      }
+      if (data.timeoutnotice != null) {
+        this.timeoutnotice = data.timeoutnotice;
+      } else {
+        this.timeoutnotice = false;
+      }
+      this.active = false;
+    }
+
+    Timelimit.prototype.start = function() {
+      this.active = true;
+      this.startedAt = (new Date).getTime();
+      return this.update();
+    };
+
+    Timelimit.prototype.stop = function() {
+      this.seconds = this.millisLeft() * 1000;
+      return this.active = false;
+    };
+
+    Timelimit.prototype.update = function() {
+      return window.setTimeout(((function(_this) {
+        return function() {
+          if (_this.active) {
+            if (_this.millisLeft() <= 0) {
+              _this.active = false;
+              return _this.page.timelimitReached();
+            } else {
+              return _this.update();
+            }
+          }
+        };
+      })(this)), 300);
+    };
+
+    Timelimit.prototype.secondsLeft = function() {
+      return Math.ceil(this.millisLeft() * 0.001);
+    };
+
+    Timelimit.prototype.millisLeft = function() {
+      return this.seconds * 1000 - ((new Date).getTime() - this.startedAt);
+    };
+
+    return Timelimit;
+
+  })();
+
+}).call(this);
+
 

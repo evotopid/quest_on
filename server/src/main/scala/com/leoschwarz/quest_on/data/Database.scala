@@ -15,6 +15,16 @@ class Database(connection: Connection) {
   def exec(file: File): Boolean = exec(Source.fromFile(file).mkString)
   def exec(url: URL): Boolean = exec(Source.fromURL(url).mkString)
 
+  // Insert and use existing id
+  def insert(survey: Survey): Boolean = {
+    val query = "INSERT INTO surveys (id, admin_id, data) VALUES (?, ?, ?)"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, survey.id)
+    stmt.setInt(2, survey.admin_id)
+    stmt.setString(3, survey.data)
+    stmt.execute()
+  }
+
   def getSurveyById(id: String): Option[Survey] = {
     val query = "SELECT * FROM surveys WHERE id = ?"
     val stmt = connection.prepareStatement(query)
@@ -61,12 +71,21 @@ object Database {
     // Try accessing Heroku database
     sys.env.get("JDBC_DATABASE_URL") match {
       case Some(url) => new Database(DriverManager.getConnection(url))
-      case None =>
+      case None => {
         System.err.println("No JDBC Database connection was found. (This mustn't happen on Heroku)")
         System.err.println("As fallback SQLite will be used")
 
         val location = "./test.sqlite"
-        new Database(DriverManager.getConnection(s"jdbc:sqlite:$location", "sa", ""))
+        val db = new Database(DriverManager.getConnection(s"jdbc:sqlite:$location", "sa", ""))
+
+        // Create test survey if doesn't exist yet.
+        if (db.getSurveyById("TEST_SURVEY").isEmpty) {
+          val survey = new Survey("TEST_SURVEY", 0, Source.fromURL(getClass.getResource("/survey_test.json")).mkString)
+          db.insert(survey)
+        }
+
+        db
+      }
     }
   }
 }

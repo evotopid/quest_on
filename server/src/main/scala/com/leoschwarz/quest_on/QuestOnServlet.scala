@@ -7,13 +7,24 @@ import com.leoschwarz.quest_on.data.Database
 import org.scalatra.NotFound
 
 class QuestOnServlet extends QuestOnStack {
-  var db: Database = null
+  val db: Database = Database.getDefault()
 
   override def init(config: ServletConfig): Unit = {
     super.init(config)
-
-    db = Database.getDefault()
     db.exec(getClass.getResource("/database.sql"))
+  }
+
+  get("/") {
+    ssp("/index")
+  }
+
+  get("/survey/:id") {
+    db.getSurveyById(params("id")) match {
+      case Some(survey) => {
+        ssp("/survey", "survey_id" -> params("id"))
+      }
+      case None => NotFound("Survey was not found on server.")
+    }
   }
 
   post("/store") {
@@ -24,7 +35,7 @@ class QuestOnServlet extends QuestOnStack {
   get("/survey/:id.json") {
     db.getSurveyById(params("id")) match {
       case Some(survey) => {
-        contentType = "application/javascript"
+        contentType = formats("json")
         survey.data
       }
       case None => NotFound("Survey was not found on server.")
