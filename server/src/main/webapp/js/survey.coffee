@@ -13,7 +13,7 @@ class window.Survey
     getResults: ->
         results = []
         for page in @pages
-            results.concat(page.values)
+            results = results.concat(page.values)
         results
 
     updateLoop: ->
@@ -46,7 +46,10 @@ class window.Survey
         @currentPage.startTimer()
 
     submitResults: ->
-        data = {results: JSON.stringify @getResults()}
+        data =
+            results: JSON.stringify @getResults()
+            surveyId: @id
+
         $.post("/store", data).done(->
             @finished = true
             $("#transfer_progress").html _("Your answers have been submitted successfully.")

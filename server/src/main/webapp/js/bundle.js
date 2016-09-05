@@ -10353,7 +10353,7 @@ return jQuery;
       ref = this.pages;
       for (i = 0, len = ref.length; i < len; i++) {
         page = ref[i];
-        results.concat(page.values);
+        results = results.concat(page.values);
       }
       return results;
     };
@@ -10395,7 +10395,8 @@ return jQuery;
     Survey.prototype.submitResults = function() {
       var data;
       data = {
-        results: JSON.stringify(this.getResults())
+        results: JSON.stringify(this.getResults()),
+        surveyId: this.id
       };
       return $.post("/store", data).done(function() {
         this.finished = true;

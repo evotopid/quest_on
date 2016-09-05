@@ -2,11 +2,16 @@ package com.leoschwarz.quest_on.data
 
 import java.io.File
 import java.net.URL
-import java.sql.{Connection, DriverManager, ResultSet}
+import java.sql.{Connection, DriverManager, ResultSet, Timestamp}
 
 import scala.io.Source
 
-class Database(connection: Connection) {
+class Database(connection: Connection, schemaSetup: Array[String]) {
+  // Setup tables if not present
+  for (query <- schemaSetup) {
+    exec(query)
+  }
+
   def exec(query: String): Boolean = {
     val stmt = connection.createStatement()
     stmt.execute(query)
@@ -16,13 +21,23 @@ class Database(connection: Connection) {
   def exec(url: URL): Boolean = exec(Source.fromURL(url).mkString)
 
   // Insert and use existing id
-  def insert(survey: Survey): Boolean = {
+  def insert(survey: Survey): Unit = {
     val query = "INSERT INTO surveys (id, admin_id, data) VALUES (?, ?, ?)"
     val stmt = connection.prepareStatement(query)
     stmt.setString(1, survey.id)
-    stmt.setInt(2, survey.admin_id)
+    stmt.setInt(2, survey.adminId)
     stmt.setString(3, survey.data)
     stmt.execute()
+  }
+
+  def insert(result: Result): Unit = {
+    val query = "INSERT INTO results (survey_id, submitted_at, data) VALUES (?, ?, ?)"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, result.surveyId)
+    stmt.setString(2, result.submittedAt.toString)
+    stmt.setString(3, result.data)
+    stmt.execute()
+    result.id = Some(stmt.getGeneratedKeys.getInt(1))
   }
 
   def getSurveyById(id: String): Option[Survey] = {
@@ -67,16 +82,28 @@ class Database(connection: Connection) {
 }
 
 object Database {
+  val SchemaSqlite = Array(
+    "CREATE TABLE IF NOT EXISTS surveys (id TEXT PRIMARY KEY, admin_id INT, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS admins (id INTEGER PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
+    "CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)"
+  )
+
+  val SchemaPostgres = Array(
+    "CREATE TABLE IF NOT EXISTS surveys (id VARCHAR(64) PRIMARY KEY, admin_id INT, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS admins (id INTEGER PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
+    "CREATE TABLE IF NOT EXISTS results (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)"
+  )
+
   def getDefault(): Database = {
     // Try accessing Heroku database
     sys.env.get("JDBC_DATABASE_URL") match {
-      case Some(url) => new Database(DriverManager.getConnection(url))
+      case Some(url) => new Database(DriverManager.getConnection(url), SchemaPostgres)
       case None => {
         System.err.println("No JDBC Database connection was found. (This mustn't happen on Heroku)")
         System.err.println("As fallback SQLite will be used")
 
         val location = "./test.sqlite"
-        val db = new Database(DriverManager.getConnection(s"jdbc:sqlite:$location", "sa", ""))
+        val db = new Database(DriverManager.getConnection(s"jdbc:sqlite:$location", "sa", ""), SchemaSqlite)
 
         // Create test survey if doesn't exist yet.
         if (db.getSurveyById("TEST_SURVEY").isEmpty) {

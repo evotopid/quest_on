@@ -1,18 +1,14 @@
 package com.leoschwarz.quest_on
 
 import java.io.File
+import java.sql.Timestamp
 import javax.servlet.ServletConfig
 
-import com.leoschwarz.quest_on.data.Database
-import org.scalatra.NotFound
+import com.leoschwarz.quest_on.data.{Database, Result}
+import org.scalatra.{NotFound, Ok, InternalServerError}
 
 class QuestOnServlet extends QuestOnStack {
   val db: Database = Database.getDefault()
-
-  override def init(config: ServletConfig): Unit = {
-    super.init(config)
-    db.exec(getClass.getResource("/database.sql"))
-  }
 
   get("/") {
     ssp("/index")
@@ -28,8 +24,19 @@ class QuestOnServlet extends QuestOnStack {
   }
 
   post("/store") {
-    val results = params("results")
-    // TODO store in database
+    val result = new Result(None,
+      surveyId = params("surveyId"),
+      new Timestamp(System.currentTimeMillis()),
+      data=params("results"))
+
+    log(s"saving survey result: $result")
+
+    //if (db.insert(result)) {
+    db.insert(result)
+    Ok("Survey results stored.")
+    //} else {
+    //  InternalServerError("Saving results failed.")
+    //}
   }
 
   get("/survey/:id.json") {

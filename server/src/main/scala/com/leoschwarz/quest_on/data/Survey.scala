@@ -1,7 +1,7 @@
 package com.leoschwarz.quest_on.data
 
 class Survey (val id: String,
-              val admin_id: Int,
+              val adminId: Int,
               var data: String) {
 
 }
