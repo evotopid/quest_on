@@ -1,0 +1,11 @@
+<%@ val formError: String = null %>
+<h1>Register</h1>
+<form action="/admin/register" method="POST">
+    #if (formError != null)
+    <div class="flash error">Error: <%= formError %></div>
+    #end
+
+    <label class="field">Email:<br><input type="email" name="email"></label>
+    <label class="field">Password:<br><input type="password" name="password"></label>
+    <input type="submit" value="Register">
+</form>

@@ -5,7 +5,7 @@ import java.util.Base64
 import javax.crypto._
 import javax.crypto.spec._
 
-class Admin (val id: Int,
+class Admin (var id: Int,
              val email: String,
              var passwordSalt: String,
              var passwordHash: String) {
@@ -31,7 +31,15 @@ class Admin (val id: Int,
   private def hashPassword(passwordPlain: String, salt: String): String = {
     val spec = new PBEKeySpec(passwordPlain.toCharArray, salt.getBytes, HashIterations, HashBytes)
     val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-    factory.generateSecret(spec).getEncoded.toString
+    new String(factory.generateSecret(spec).getEncoded).take(HashBytes)
   }
 
+}
+
+object Admin {
+  def create(email: String, password: String): Admin = {
+    val admin = new Admin(-1, email, "", "")
+    admin.setPassword(password)
+    admin
+  }
 }

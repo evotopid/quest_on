@@ -4,6 +4,7 @@ import java.io.File
 import java.net.URL
 import java.sql.{Connection, DriverManager, ResultSet, Timestamp}
 
+import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
 class Database(connection: Connection, schemaSetup: Array[String]) {
@@ -40,19 +41,100 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
     result.id = Some(stmt.getGeneratedKeys.getInt(1))
   }
 
+  def insert(admin: Admin): Unit = {
+    val query = "INSERT INTO admins (email, password_salt, password_hash) VALUES (?, ?, ?)"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, admin.email)
+    stmt.setString(2, admin.passwordSalt)
+    stmt.setString(3, admin.passwordHash)
+    stmt.execute()
+    admin.id = stmt.getGeneratedKeys.getInt(1)
+  }
+
+  def insert(image: Image): Unit = {
+    val query = "INSERT INTO images (survey_id, location, blob) VALUES (?, ?, ?)"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, image.surveyId)
+    stmt.setString(2, image.location.toString)
+    if (image.blob.isDefined) {
+      stmt.setBlob(3, image.blob.get)
+    } else {
+      stmt.setNull(3, 0)
+    }
+    stmt.execute()
+    image.id = stmt.getGeneratedKeys.getInt(1)
+  }
+
+  def update(survey: Survey): Unit = {
+    val query = "UPDATE surveys SET data = ? WHERE id = ?"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, survey.data)
+    stmt.setString(2, survey.id)
+    stmt.execute()
+  }
+
+  def getImageById(id: Int): Option[Image] = {
+    val query = "SELECT * FROM images WHERE id = ?"
+    val stmt = connection.prepareStatement(query)
+    stmt.setInt(1, id)
+    val result = stmt.executeQuery()
+    if (result.next()) {
+      Some(extractImage(result))
+    } else {
+      None
+    }
+  }
+
+  def getImagesOfSurvey(surveyId: String): ArrayBuffer[Image] = {
+    val query = "SELECT * FROM images WHERE survey_id = ?"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, surveyId)
+    val result = stmt.executeQuery()
+    val images = new ArrayBuffer[Image]()
+    while (result.next()) {
+      images += extractImage(result)
+    }
+    images
+  }
+
+  private def extractImage(result: ResultSet): Image = {
+    new Image(
+      id = result.getInt("id"),
+      surveyId = result.getString("survey_id"),
+      location = ImageLocation.fromString(result.getString("location")).get,
+      blob = Option(result.getBlob("blob"))
+    )
+  }
+
   def getSurveyById(id: String): Option[Survey] = {
     val query = "SELECT * FROM surveys WHERE id = ?"
     val stmt = connection.prepareStatement(query)
     stmt.setString(1, id)
     val result = stmt.executeQuery()
     if (result.next()) {
-      val id = result.getString("id")
-      val admin_id = result.getInt("admin_id")
-      val data = result.getString("data")
-      Some(new Survey(id, admin_id, data))
+      Some(extractSurvey(result))
     } else {
       None
     }
+  }
+
+  def getSurveysOfAdmin(admin: Admin): ArrayBuffer[Survey] = {
+    val query = "SELECT * FROM surveys WHERE admin_id = ?"
+    val stmt = connection.prepareStatement(query)
+    stmt.setInt(1, admin.id)
+    val result = stmt.executeQuery()
+    val surveys = new ArrayBuffer[Survey]()
+    while (result.next()) {
+      surveys += extractSurvey(result)
+    }
+    surveys
+   }
+
+  private def extractSurvey(result: ResultSet): Survey = {
+    val id = result.getString("id")
+    val admin_id = result.getInt("admin_id")
+    val data = result.getString("data")
+    new Survey(id, admin_id, data)
   }
 
   def getAdminById(id: Int): Option[Admin] = {
@@ -84,14 +166,16 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
 object Database {
   val SchemaSqlite = Array(
     "CREATE TABLE IF NOT EXISTS surveys (id TEXT PRIMARY KEY, admin_id INT, data TEXT)",
-    "CREATE TABLE IF NOT EXISTS admins (id INTEGER PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
-    "CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)"
+    "CREATE TABLE IF NOT EXISTS admins  (id INTEGER PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
+    "CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS images  (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, location TEXT, blob BLOB)"
   )
 
   val SchemaPostgres = Array(
     "CREATE TABLE IF NOT EXISTS surveys (id VARCHAR(64) PRIMARY KEY, admin_id INT, data TEXT)",
-    "CREATE TABLE IF NOT EXISTS admins (id INTEGER PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
-    "CREATE TABLE IF NOT EXISTS results (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)"
+    "CREATE TABLE IF NOT EXISTS admins  (id SERIAL PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
+    "CREATE TABLE IF NOT EXISTS results (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS images  (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), location TEXT, blob BLOB)"
   )
 
   def getDefault(): Database = {

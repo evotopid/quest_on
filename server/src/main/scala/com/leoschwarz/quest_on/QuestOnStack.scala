@@ -1,12 +1,14 @@
 package com.leoschwarz.quest_on
 
+import com.leoschwarz.quest_on.data.Admin
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
 import scalate.ScalateSupport
 import org.json4s.{DefaultFormats, Formats}
 
 
-trait QuestOnStack extends ScalatraServlet with ScalateSupport with JacksonJsonSupport {
+trait QuestOnStack extends ScalatraServlet
+  with ScalateSupport with JacksonJsonSupport with SessionSupport with FlashMapSupport {
 
   protected implicit val jsonFormats: Formats = DefaultFormats
 
@@ -19,5 +21,6 @@ trait QuestOnStack extends ScalatraServlet with ScalateSupport with JacksonJsonS
       layoutTemplate(path)
     } orElse serveStaticResource() getOrElse resourceNotFound()
   }
+
 
 }

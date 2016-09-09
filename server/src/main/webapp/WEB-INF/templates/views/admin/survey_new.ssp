@@ -1,0 +1,18 @@
+<%@ val formError: String = null %>
+<h1>New Survey</h1>
+
+#if (formError != null)
+    <div class="error"><%= formError %></div>
+#end
+
+<form method="POST">
+    <label class="field">
+        Identifier (will be part of URL)<br>
+        Only alphanumeric chars (a-z and 0-9), underscores (_) and dashes (-)
+        <input type="text" name="id">
+    </label>
+
+    <label for="input_data">Data (in JSON format)</label><br>
+    <textarea name="data" id="input_data"></textarea><br>
+    <input type="submit" value="Add new Survey">
+</form>

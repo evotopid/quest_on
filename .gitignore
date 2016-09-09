@@ -8,5 +8,5 @@ tmp/
 /server/target
 /server/project/target
 /server/project/project/target
-/server/.idea
-
+*/.idea
+*/.idea_modules

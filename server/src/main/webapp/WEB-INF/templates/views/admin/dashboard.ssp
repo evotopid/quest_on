@@ -1,0 +1,25 @@
+<%@ val surveys: scala.collection.mutable.ArrayBuffer[com.leoschwarz.quest_on.data.Survey] %>
+<h1>Dashboard</h1>
+<h2>Surveys</h2>
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Title</th>
+        <th>Actions</th>
+    </tr>
+    #for (survey <- surveys)
+    <tr>
+        <td><%= survey.id %></td>
+        <td><%= survey.title %></td>
+        <td>
+            <a href="/survey/<%= survey.id %>">Launch</a> •
+            <a href="/admin/survey/edit/<%= survey.id %>">Edit</a> •
+            <a href="/admin/survey/images/<%= survey.id %>">Images</a> •
+            <a href="/admin/survey/results/<%= survey.id %>">Results</a>
+        </td>
+    </tr>
+    #end
+
+    <a href="/admin/survey/new">Add Survey</a> •
+    <a href="/admin/logout">Logout</a>
+</table>

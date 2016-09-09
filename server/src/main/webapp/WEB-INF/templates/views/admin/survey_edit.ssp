@@ -1,0 +1,15 @@
+<%@ val formError: String = null %>
+<%@ val survey: com.leoschwarz.quest_on.data.Survey %>
+<h1>Edit Survey</h1>
+
+#if (formError != null)
+    <div class="error"><%= formError %></div>
+#end
+
+<form method="POST">
+Identifier (part of URL): <%= survey.id %><br>
+
+<label for="input_data">Data (in JSON format)</label><br>
+<textarea name="data" id="input_data"><%= survey.data %></textarea><br>
+<input type="submit" value="Save">
+</form>

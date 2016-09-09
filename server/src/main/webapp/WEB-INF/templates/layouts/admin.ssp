@@ -1,0 +1,22 @@
+<%@ val body: String %>
+<%@ import val flash:org.scalatra.FlashMap = null %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="/css/web.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/bundle.js"></script>
+
+    <title>quest_on admin area</title>
+</head>
+<body>
+    <div id="container">
+        #if (flash != null && flash.isDefinedAt("notice"))
+            <div class="flash notice"><%= flash.get("notice") %></div>
+        #end
+
+        <%= unescape(body) %>
+    </div>
+</body>
+</html>

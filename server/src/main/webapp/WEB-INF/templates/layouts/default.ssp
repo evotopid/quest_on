@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="/css/web.css">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="/css/web.css">
     <script src="/js/bundle.js"></script>
     <script>
         var $directory = window.location.href.substring(0, window.location.href.lastIndexOf("/"));

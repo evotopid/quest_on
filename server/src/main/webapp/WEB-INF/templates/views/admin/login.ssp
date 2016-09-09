@@ -1,0 +1,7 @@
+<form action="/admin/login" method="POST">
+    <label>Email: <input type="email" name="email"></label><br>
+    <label>Password: <input type="password" name="password"></label>
+    <input type="submit" value="Login">
+</form>
+
+Need an account? Register <a href="/admin/register">here</a>.
