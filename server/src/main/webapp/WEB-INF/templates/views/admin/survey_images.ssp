@@ -1,1 +1,41 @@
 <%@ val images: IndexedSeq[com.leoschwarz.quest_on.data.Image] %>
+<%@ val missingImages: Iterable[String] %>
+<%@ val surveyId: String %>
+
+<nav>
+<a href="/admin/dashboard">Dashboard</a>
+</nav>
+
+Existing images:
+<table>
+<tr>
+    <th>Filename</th>
+    <th>Location</th>
+    <th>Actions</th>
+</tr>
+#for (image <- images)
+<tr>
+    <td><%= image.filename %></td>
+    <td><%= image.location.toString %></td>
+    <td>
+        <a href="/admin/survey/<%= surveyId %>/images/edit/<%= image.id %>">Edit</a> •
+        <a href="/admin/survey/<%= surveyId %>/images/delete/<%= image.id %>">Delete</a>
+    </td>
+</tr>
+#end
+</table>
+<br><br>
+
+Included in survey but missing images:
+<table>
+<tr>
+    <th>Filename</th>
+    <th>Actions</th>
+</tr>
+#for (image <- missingImages)
+<tr>
+    <td><%= image %></td>
+    <td><a href="/admin/survey/<%= surveyId %>/images/add/<%= image %>">Add</a></td>
+</tr>
+#end
+</table>

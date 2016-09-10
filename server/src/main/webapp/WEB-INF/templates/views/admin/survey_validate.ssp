@@ -1,0 +1,16 @@
+<%@ val survey: com.leoschwarz.quest_on.data.Survey %>
+
+<h1>Survey Validation</h1>
+<p>Survey ID: <%= survey.id %></p>
+<p>Valid:
+    #if (survey.isValid)
+    <span style="color:blue">Yes</span>
+    #else
+    <span style="color:red">No</span>
+    #end
+</p>
+
+#if (!survey.isValid)
+    <p>Validation Output:</p>
+    <textarea><%= survey.ast.right.get.logger.toString %></textarea>
+#end

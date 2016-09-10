@@ -1,10 +1,15 @@
 <%@ val surveys: scala.collection.mutable.ArrayBuffer[com.leoschwarz.quest_on.data.Survey] %>
 <h1>Dashboard</h1>
+
+<a href="/admin/survey/new">Add Survey</a> •
+<a href="/admin/logout">Logout</a>
+
 <h2>Surveys</h2>
 <table>
     <tr>
         <th>Identifier</th>
         <th>Title</th>
+        <th>Valid</th>
         <th>Actions</th>
     </tr>
     #for (survey <- surveys)
@@ -12,14 +17,20 @@
         <td><%= survey.id %></td>
         <td><%= survey.title %></td>
         <td>
+            <a href="/admin/survey/<%= survey.id %>/validate">
+            #if (survey.isValid)
+                <span style="color:blue">Yes</span>
+            #else
+                <span style="color:red">No</span>
+            #end
+            <a>
+        </td>
+        <td>
             <a href="/survey/<%= survey.id %>">Launch</a> •
-            <a href="/admin/survey/edit/<%= survey.id %>">Edit</a> •
-            <a href="/admin/survey/images/<%= survey.id %>">Images</a> •
-            <a href="/admin/survey/results/<%= survey.id %>">Results</a>
+            <a href="/admin/survey/<%= survey.id %>/edit">Edit</a> •
+            <a href="/admin/survey/<%= survey.id %>/images">Images</a> •
+            <a href="/admin/survey/<%= survey.id %>/results">Results</a>
         </td>
     </tr>
     #end
-
-    <a href="/admin/survey/new">Add Survey</a> •
-    <a href="/admin/logout">Logout</a>
 </table>

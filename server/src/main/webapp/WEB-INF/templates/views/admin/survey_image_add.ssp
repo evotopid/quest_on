@@ -1,0 +1,19 @@
+<%@ val filename: String = "" %>
+
+Identically named images of the same survey will be overwritten.<br>
+
+Remote File (hosted at a different place):<br>
+<form method="POST">
+    <input type="hidden" name="location" value="remote">
+    <label class="field">Filename:<br><input type="text" name="filename" value="<%= filename%>"></label>
+    <label class="field">URL:<br><input type="text" name="url"></label>
+    <input type="submit" value="Add Image">
+</form>
+
+Local File (hosted on local server in database, WARNING: only host small files):<br>
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="location" value="local">
+    <label class="field">Filename:<br><input type="text" name="filename" value="<%= filename%>"></label>
+    <label class="field">File:<br><input type="file" name="file"></label>
+    <input type="submit" value="Add Image">
+</form>

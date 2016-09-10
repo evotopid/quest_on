@@ -1,11 +1,20 @@
 package com.leoschwarz.quest_on.data
 
-sealed trait ImageLocation
+sealed trait ImageLocation {
+  def local: Option[Local]
+  def remote: Option[Remote]
+}
+
 case class Local() extends ImageLocation {
   override def toString = "locally"
+  override val local = Some(this)
+  override val remote = None
 }
+
 case class Remote(url: String) extends ImageLocation {
   override def toString = "remote:" + url
+  override val local = None
+  override val remote = Some(this)
 }
 
 object ImageLocation {

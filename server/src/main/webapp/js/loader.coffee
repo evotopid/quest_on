@@ -1,6 +1,6 @@
 window.loadApplication = (surveyId, callback) ->
     loadImages = (cb) ->
-        $.ajax(url: "/all_images.json").done((images) ->
+        $.ajax(url: "/survey/#{surveyId}/images.json").done((images) ->
             remainingImages = images.length
             window.loadingObjects = for src in images
                 image = new Image

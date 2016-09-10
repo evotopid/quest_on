@@ -10081,7 +10081,7 @@ return jQuery;
     var loadImages, loadLocalization, loadSurvey;
     loadImages = function(cb) {
       return $.ajax({
-        url: "/all_images.json"
+        url: "/survey/" + surveyId + "/images.json"
       }).done(function(images) {
         var image, remainingImages, src;
         remainingImages = images.length;
@@ -10281,7 +10281,7 @@ return jQuery;
         case 'textmessage':
           return "<div class='textmessage'>" + this.content + "</div>";
         case 'image':
-          return "<div class='image'><img src='/img/" + this.path + "'></div>";
+          return "<div class='image'><img src='/survey/" + window.survey.id + "/img/" + this.path + "'></div>";
         case 'multiplechoice':
           html = '<div class="multiplechoice">';
           for (answer_id in this.answers) {

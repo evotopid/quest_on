@@ -11,7 +11,7 @@ class window.PageItem
             when 'textmessage'
                 "<div class='textmessage'>#{@content}</div>"
             when 'image'
-                "<div class='image'><img src='/img/#{@path}'></div>"
+                "<div class='image'><img src='/survey/#{window.survey.id}/img/#{@path}'></div>"
             when 'multiplechoice'
                 html = '<div class="multiplechoice">'
                 for answer_id of @answers

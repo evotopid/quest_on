@@ -3,8 +3,11 @@ package com.leoschwarz.quest_on
 import java.io.File
 import java.sql.Timestamp
 
-import com.leoschwarz.quest_on.data.{Admin, Database, Result, Survey}
-import org.scalatra.{BadRequest, InternalServerError, NotFound, Ok}
+import com.leoschwarz.quest_on.data._
+import org.scalatra.{BadRequest, MovedPermanently, NotFound, Ok}
+
+import scala.collection.mutable
+import scala.util.control.Breaks
 
 class QuestOnServlet extends QuestOnStack with DatabaseAccess with AuthenticationSupport {
   val AdminLayout = "WEB-INF/templates/layouts/admin.ssp"
@@ -12,6 +15,21 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
 
   get("/") {
     ssp("/index")
+  }
+
+  get("/survey/:survey_id/img/:filename") {
+    db.getImageBySurveyIdAndFilename(params("survey_id"), params("filename")) match {
+      case Some(image) => {
+        image.location match {
+          case Local() => {
+            contentType = image.mimeType.getOrElse("")
+            image.blob.get
+          }
+          case Remote(url) => MovedPermanently(url)
+        }
+      }
+      case _ => NotFound
+    }
   }
 
   get("/survey/:id") {
@@ -67,10 +85,10 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
     }
   }
 
-  get("/all_images.json") {
+  get("/survey/:id/images.json") {
     contentType = formats("json")
-    val imageDir = new File(getServletContext.getRealPath("/img"))
-    imageDir.listFiles().map((f) => s"/img/${f.getName}").toList
+    val images = db.getImagesOfSurvey(params("id"))
+    images.map((image) => s"/survey/${image.surveyId}/img/${image.filename}").toList
   }
 
   /* ***************************************
@@ -155,12 +173,12 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
     }
   }
 
-  get("/admin/survey/edit/:id") {
+  get("/admin/survey/:id/edit") {
     val (admin, survey) = adminSurveyAuth.get
     ssp("/admin/survey_edit.ssp", "layout" -> AdminLayout, "survey" -> survey)
   }
 
-  post("/admin/survey/edit/:id") {
+  post("/admin/survey/:id/edit") {
     val (admin, survey) = adminSurveyAuth.get
 
     survey.data = params("data")
@@ -168,19 +186,104 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
     redirect("/admin/dashboard")
   }
 
-  get("/admin/survey/results/:id") {
+  get("/admin/survey/:id/results") {
     val (admin, survey) = adminSurveyAuth.get
   }
 
-  get("/admin/survey/images/:id") {
+  get("/admin/survey/:id/validate") {
+    val (admin, survey) = adminSurveyAuth.get
+    ssp("/admin/survey_validate.ssp", "layout" -> AdminLayout, "survey" -> survey)
+  }
+
+  get("/admin/survey/:id/images") {
     val (admin, survey) = adminSurveyAuth.get
     val images = db.getImagesOfSurvey(survey.id)
-    ssp("/admin/survey_images.ssp", "layout" -> "admin", "images" -> images)
+
+    // Find missing images.
+    val missingImages = new mutable.HashSet[String]
+    for (referencedImage <- survey.allReferencedImages) {
+      Breaks.breakable {
+        for (image <- images) {
+          if (image.filename == referencedImage)
+            Breaks.break()
+        }
+
+        missingImages += referencedImage
+      }
+    }
+
+    ssp("/admin/survey_images.ssp", "layout" -> AdminLayout, "surveyId" -> survey.id,
+      "images" -> images, "missingImages" -> missingImages)
+  }
+
+  get("/admin/survey/:id/images/add/:image") {
+    val (admin, survey) = adminSurveyAuth.get
+    ssp("/admin/survey_image_add.ssp", "layout" -> AdminLayout, "filename" -> params("image"))
+  }
+
+  post("/admin/survey/:id/images/add/:image") {
+    val (admin, survey) = adminSurveyAuth.get
+    val filename = params("filename")
+    params.getOrElse("location", "") match {
+      case "remote" => {
+        val url = params("url")
+
+        // Insert or update image. (TODO MIME Type)
+        val image = new Image(-1, surveyId = survey.id, filename = filename, mimeType = None, location = Remote(url), blob = None)
+        // TODO this is futile right now (also under local) since the id is -1...
+        db.insertOrUpdate(image)
+
+        redirect(s"/admin/survey/${survey.id}/images")
+      }
+      case "local" => {
+        val file = fileParams("file")
+        val mime = file.contentType
+        val blob = Some(file.get())
+        val image = new Image(-1, surveyId = survey.id, filename = filename, mimeType = mime, location = Local(), blob = blob)
+        db.insertOrUpdate(image)
+
+        redirect(s"/admin/survey/${survey.id}/images")
+      }
+      case _ => BadRequest("Invalid location.")
+    }
+  }
+
+  get("/admin/survey/:id/images/edit/:image_id") {
+    adminSurveyAuth
+    val image = db.getImageById(params("image_id").toInt).get
+    ssp("/admin/survey_image_edit.ssp", "layout" -> AdminLayout, "image" -> image)
+  }
+
+  post("/admin/survey/:id/images/edit/:image_id") {
+    val (admin, survey) = adminSurveyAuth.get
+    val image = db.getImageById(params("image_id").toInt).get
+
+    if (image.surveyId != survey.id) {
+      BadRequest("Wrong survey relation.")
+    } else if (image.location.local.isDefined) {
+      BadRequest("Not implemented yet.")
+    } else {
+      image.location = Remote(params("url"))
+      db.update(image)
+      redirect(s"/admin/survey/${survey.id}/images")
+    }
+  }
+
+  get("/admin/survey/:id/images/delete/:image_id") {
+    val (admin, survey) = adminSurveyAuth.get
+    val image = db.getImageById(params("image_id").toInt).get
+    if (image.surveyId != survey.id) {
+      BadRequest("Wrong survey relation.")
+    } else {
+      db.delete(image)
+      redirect(s"/admin/survey/${survey.id}/images")
+    }
   }
 
   /**
     * Makes sure an admin is authenticated.
     * If this is not the case the browser will be redirected to the login page and the current execution will be halted.
+    *
     * @return the authenticated admin
     */
   protected def adminAuth(): Option[Admin] = {
@@ -196,6 +299,7 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
   /**
     * Makes sure and admin is authenticated and has access to the survey with id params("id").
     * If this is not the case the browser will be redirected to the dashboard page and the current execution will be halted.
+    *
     * @return authenticated admin, accessed survey
     */
   protected def adminSurveyAuth: Option[(Admin, Survey)] = {

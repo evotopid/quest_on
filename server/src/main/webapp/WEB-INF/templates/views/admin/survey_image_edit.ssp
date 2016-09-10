@@ -1,0 +1,12 @@
+<%@ val image: com.leoschwarz.quest_on.data.Image %>
+<h1>Edit image</h1>
+#if (image.location.local.isDefined)
+    <p>Image editing of locally uploaded images is not available (yet).<br>
+        Delete the image and create a new one as a workaround.</p>
+#else
+    <form method="post">
+        <p><strong>Filename:</strong> <%= image.filename %></p>
+        <label class="field">Image URL: <input type="text" value="<%= image.location.remote.get.url %>" name="url"></label>
+        <input type="submit" value="Update">
+    </form>
+#end

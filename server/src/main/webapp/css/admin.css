@@ -5,12 +5,12 @@ input[type=password]
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 300px;
+    width: 50px;
 }
 
 form > .field
 {
-    width: 300px;
+    width: 50px;
     margin: auto 0 auto 5px;
 }
 
