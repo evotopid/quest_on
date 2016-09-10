@@ -205,6 +205,25 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
       None
     }
   }
+
+  def getResults(survey: Survey): ArrayBuffer[Result] = {
+    val query = "SELECT * FROM results WHERE survey_id = ? ORDER BY submitted_at ASC"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, survey.id)
+    val result = stmt.executeQuery()
+    val buffer = new ArrayBuffer[Result]()
+
+    while (result.next()) {
+      buffer += new Result(
+        id = Some(result.getInt("id")),
+        surveyId = survey.id,
+        submittedAt = result.getTimestamp("submitted_at"),
+        data = result.getString("data")
+      )
+    }
+
+    buffer
+  }
 }
 
 object Database {

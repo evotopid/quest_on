@@ -1,0 +1,21 @@
+<%@ val survey: com.leoschwarz.quest_on.data.Survey %>
+<%@ val resultsCount: Int %>
+<h1>Survey Results</h1>
+<nav>
+<a href="/admin/dashboard/">Dashboard</a>
+</nav>
+
+<table>
+<tr>
+    <th>Survey ID</th>
+    <td><%= survey.id%></td>
+</tr>
+<tr>
+    <th>Results Number</th>
+    <td><%= resultsCount %></td>
+</tr>
+<tr>
+    <th>Report</th>
+    <td><a href="results.xlsx">Export Spreadsheet</a></td>
+</tr>
+</table>

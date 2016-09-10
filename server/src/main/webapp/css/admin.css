@@ -5,13 +5,19 @@ input[type=password]
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 50px;
+    width: 500px;
 }
 
 form > .field
 {
-    width: 50px;
+    width: 500px;
     margin: auto 0 auto 5px;
+}
+
+form > textarea
+{
+    width: 500px;
+    height: 300px;
 }
 
 table

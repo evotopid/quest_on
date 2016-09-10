@@ -36,7 +36,11 @@ object Quest_onBuild extends Build {
 
         // Database
         "org.postgresql" % "postgresql" % "9.4.1209",
-        "org.xerial" % "sqlite-jdbc" % "3.8.11.2"
+        "org.xerial" % "sqlite-jdbc" % "3.8.11.2",
+
+        // Excel format support
+        "org.apache.poi" % "poi" % "3.14",
+        "org.apache.poi" % "poi-ooxml" % "3.14"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(

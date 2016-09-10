@@ -4,6 +4,7 @@ import java.io.File
 import java.sql.Timestamp
 
 import com.leoschwarz.quest_on.data._
+import org.apache.poi.xssf.streaming.SXSSFWorkbook
 import org.scalatra.{BadRequest, MovedPermanently, NotFound, Ok}
 
 import scala.collection.mutable
@@ -188,6 +189,15 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
 
   get("/admin/survey/:id/results") {
     val (admin, survey) = adminSurveyAuth.get
+    val resultCount = db.getResults(survey).length
+    ssp("/admin/survey_results.ssp", "layout" -> AdminLayout, "survey" -> survey, "resultsCount" -> resultCount)
+  }
+
+  get("/admin/survey/:id/results.xlsx") {
+    val (admin, survey) = adminSurveyAuth.get
+    val results = db.getResults(survey)
+    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    new Exporter(results).export()
   }
 
   get("/admin/survey/:id/validate") {
