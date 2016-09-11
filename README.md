@@ -1,12 +1,23 @@
 # Introduction
-Quest_on is a web application which allows you to collect advanced surveys online.
-Unlike many of its commercial competitors which are especially made for business use cases,
-it tries to provide an interface to collect data for scientific research.
+Quest_on is a web application allowing tailored to collecting advanced scientific online surveys.
+It provides features like time oriented surveying which are not frequently found in commercial
+competitior's products.
 
-There aren't too many features yet and all the specifications of the project are subject to changes.
-Please note that while this documentation is written in English the main text output of the webpage
-is German. Localization for strings displayed to users will be added in a future release.
+**Status:** The project is currently reworked and as a result especially the documentation is a bit
+lacking in the moment although this will be improved in the near future.
 
+# Running Locally
+You need to have a recent Java SDK (ie. version 8) and Scala SBT installed.
+From within a terminal navigate to the directory the application is located and start the server with:
+
+```sh
+$ cd quest_on
+$ ./sbt
+> jetty:start
+> browse
+```
+
+If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.
 
 ## TODO
 - Add multiple export methods
@@ -14,22 +25,6 @@ is German. Localization for strings displayed to users will be added in a future
 - Interactive editor for survey.json files
 - Service to host survey.json files online
 - Make a real relase
-
-# Server Configuration
-Quest_on is a standalone ruby application which bundles it's own rack interface so it can be easily
-ran on different hosting options (or self hosted).
-To allow quest_on to function there are several environemnt variables which have to be set.
-Currently the only export method for quest_on is to have an email sent with an "xlsx" file attached
-as soon as there is a new survey report collected.
-For this to work you have to set these environment variables:
-
-- DESTINATION_EMAIL: The email address the results will be sent to.
-- SOURCE_EMAIL: The email address the results will be sent from.
-- SOURCE_DOMAIN: The domain you want the email to appear to be sent from.
-- SMTP_ADDRESS: The address of the SMTP server. 
-- SMTP_USERNAME: The username for the SMTP server.
-- SMTP_PASSWORD: The password for the SMTP server.
-
 
 
 # Survey Configuration
