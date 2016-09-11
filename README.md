@@ -42,7 +42,7 @@ However it's possible to directly edit a survey's [JSON](https://en.wikipedia.or
 As it's possible to make mistakes easily there is survey validation built into the admin dashboard.
 In case you are stuck feel free to open an issue with your survey JSON and validation output.
 
-Check [this reference](https://github.com/evotopid/quest_on/docs/survey_json.md) for further information on how to write a survey.
+Check [this reference](https://github.com/evotopid/quest_on/blob/master/docs/survey_json.md) for further information on how to write a survey.
 
 ## Images
 In the survey it's possible to reference images. You only have to provide the filename in the survey file.

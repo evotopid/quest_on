@@ -12,7 +12,7 @@ It has a `title` attribute which is a string, and an attribute `pages` which is 
 
 Basically a survey looks like this:
 
-```json
+```
 {
     "title": "My awesome survey",
     "pages": [
@@ -30,6 +30,7 @@ Each page corresponds to a page of information that will be displayed to the sur
 It holds a list of items which are the elements that will be actually displayed on the page together.
 
 Attributes:
+
 | Name      | JSON Type      | Description |
 | --------- | -------------- | ----------- |
 | items     | array          | Array consisting of page items. They will be rendered in this order. See section page items for more information on the structure and kinds of supported items. |
@@ -56,6 +57,7 @@ something like that.
 Timelimits allow you to specify a maximum amount of time a user may spend on a page or group of page.
 
 Attributes:
+
 | Name          | JSON Type      | Description |
 | ------------- | -------------- | ----------- |
 | group         | string or null | If null it's a page level timelimit. If it's a string the timelimit will be grouped with other timelimits of the same name meaning that it only is started the first time a timelimit with that name is encountered and if the time is over all subsequent pages of this group will be skipped. |
