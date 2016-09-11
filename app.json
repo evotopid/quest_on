@@ -1,6 +1,6 @@
 {
     "name": "quest_on survey tool",
-    "description": "Scientifics survey collection web application.",
+    "description": "Scientific survey collection web application.",
     "repository": "https://github.com/evotopid/quest_on",
     "keywords": ["survey", "science"],
     "addons": [
