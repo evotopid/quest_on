@@ -2,9 +2,9 @@
 <%@ val missingImages: Iterable[String] %>
 <%@ val surveyId: String %>
 
-<nav>
-<a href="/admin/dashboard">Dashboard</a>
-</nav>
+<h1>Survey Images</h1>
+
+${include("/include/admin_nav.ssp")}
 
 Existing images:
 <table>

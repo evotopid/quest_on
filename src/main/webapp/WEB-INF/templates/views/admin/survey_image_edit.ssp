@@ -1,5 +1,8 @@
 <%@ val image: com.leoschwarz.quest_on.data.Image %>
 <h1>Edit image</h1>
+
+${include("/include/admin_nav.ssp")}
+
 #if (image.location.local.isDefined)
     <p>Image editing of locally uploaded images is not available (yet).<br>
         Delete the image and create a new one as a workaround.</p>

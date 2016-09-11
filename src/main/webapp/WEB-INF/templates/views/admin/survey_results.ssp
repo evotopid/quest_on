@@ -1,9 +1,8 @@
 <%@ val survey: com.leoschwarz.quest_on.data.Survey %>
 <%@ val resultsCount: Int %>
 <h1>Survey Results</h1>
-<nav>
-<a href="/admin/dashboard/">Dashboard</a>
-</nav>
+
+${include("/include/admin_nav.ssp")}
 
 <table>
 <tr>

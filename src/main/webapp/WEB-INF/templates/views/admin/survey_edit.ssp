@@ -2,6 +2,8 @@
 <%@ val survey: com.leoschwarz.quest_on.data.Survey %>
 <h1>Edit Survey</h1>
 
+${include("/include/admin_nav.ssp")}
+
 #if (formError != null)
     <div class="error"><%= formError %></div>
 #end

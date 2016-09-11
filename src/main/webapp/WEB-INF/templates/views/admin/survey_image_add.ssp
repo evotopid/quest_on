@@ -1,4 +1,7 @@
 <%@ val filename: String = "" %>
+<h1>Add Image</h1>
+
+${include("/include/admin_nav.ssp")}
 
 Identically named images of the same survey will be overwritten.<br>
 
