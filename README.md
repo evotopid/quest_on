@@ -19,11 +19,20 @@ $ ./sbt
 
 If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.
 
+# Running on Heroku
+The free tier of Heroku allows you to run your own instance of quest_on for your purposes.
+You might want to fork this repository to have direct control over the hosted code, please
+note however that receiving updates will require further intervention of you (ie. pushing changes to Heroku via git).
+
+All you need to do is press the following button and proceed with the procedure.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+
 ## TODO
 - Add multiple export methods
 - Improve Docs
 - Interactive editor for survey.json files
-- Service to host survey.json files online
 - Make a real relase
 
 
