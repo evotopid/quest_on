@@ -1,15 +1,10 @@
-import com.leoschwarz.quest_on.QuestOnServlet
 import org.eclipse.jetty.server.Server
-import org.eclipse.jetty.servlet.ServletHandler
 import org.eclipse.jetty.webapp.WebAppContext
 import org.scalatra.servlet.ScalatraListener
 
 object JettyLauncher {
   def main(args: Array[String]): Unit = {
-    val port = if (System.getProperty("http.port") != null)
-      System.getProperty("http.port").toInt
-    else
-      8080
+    val port = sys.env.getOrElse("PORT", 8080).toString.toInt
 
     val server = new Server(port)
     val context = new WebAppContext()
