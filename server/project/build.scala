@@ -34,6 +34,9 @@ object Quest_onBuild extends Build {
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
         "org.json4s" %% "json4s-jackson" % "3.4.0",
 
+        // YAML
+        "org.yaml" % "snakeyaml" % "1.17",
+
         // Database
         "org.postgresql" % "postgresql" % "9.4.1209",
         "org.xerial" % "sqlite-jdbc" % "3.8.11.2",

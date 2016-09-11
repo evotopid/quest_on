@@ -1,5 +1,8 @@
 <%@ val formError: String = null %>
+<%@ val registrationEnabled: Boolean %>
 <h1>Register</h1>
+
+#if (registrationEnabled)
 <form action="/admin/register" method="POST">
     #if (formError != null)
     <div class="flash error">Error: <%= formError %></div>
@@ -9,3 +12,6 @@
     <label class="field">Password:<br><input type="password" name="password"></label>
     <input type="submit" value="Register">
 </form>
+#else
+<p>Registration is disabled. (Check config.yaml)</p>
+#end

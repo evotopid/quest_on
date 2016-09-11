@@ -128,26 +128,32 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
   }
 
   get("/admin/register") {
-    ssp("/admin/register", "layout" -> AdminLayout)
+    ssp("/admin/register", "layout" -> AdminLayout, "registrationEnabled" -> Config.get.registrationEnabled)
   }
 
   post("/admin/register") {
-    val email = params("email")
-    val password = params("password")
+    if (Config.get.registrationEnabled) {
+      val email = params("email")
+      val password = params("password")
 
-    // Validate for emptiness.
-    if (email.isEmpty || password.isEmpty) {
-      ssp("/admin/register", "layout" -> AdminLayout, "formError" -> "Email and password mustn't be empty.")
-    } else if (db.getAdminByEmail(email).isDefined) {
-      ssp("/admin/register", "layout" -> AdminLayout, "formError" -> "Email already taken.")
+      // Validate for emptiness.
+      if (email.isEmpty || password.isEmpty) {
+        ssp("/admin/register", "layout" -> AdminLayout,"formError" -> "Email and password mustn't be empty.",
+          "registrationEnabled" -> Config.get.registrationEnabled)
+      } else if (db.getAdminByEmail(email).isDefined) {
+        ssp("/admin/register", "layout" -> AdminLayout, "formError" -> "Email already taken.",
+          "registrationEnabled" -> Config.get.registrationEnabled)
+      } else {
+        // Create admin in database
+        val admin = Admin.create(email, password)
+        db.insert(admin)
+
+        // Redirect to login page.
+        flash("notice") = "You have been registered successfully."
+        redirect("/admin/dashboard")
+      }
     } else {
-      // Create admin in database
-      val admin = Admin.create(email, password)
-      db.insert(admin)
-
-      // Redirect to login page.
-      flash("notice") = "You have been registered successfully."
-      redirect("/admin/dashboard")
+      BadRequest("Registration is disabled.")
     }
   }
 

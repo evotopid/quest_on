@@ -1,0 +1,3 @@
+# If set to YES everyone will be allowed to register as an admin.
+# If set to NO only admins already registered will have access to the admin area.
+registration_enabled: YES
