@@ -30,6 +30,7 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
   }
 
   def exec(file: File): Boolean = exec(Source.fromFile(file).mkString)
+
   def exec(url: URL): Boolean = exec(Source.fromURL(url).mkString)
 
   // Insert and use existing id
@@ -49,7 +50,9 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
     stmt.setString(2, result.submittedAt.toString)
     stmt.setString(3, result.data)
     stmt.execute()
-    result.id = Some(stmt.getGeneratedKeys.getInt(1))
+    if (stmt.getGeneratedKeys.next()) {
+      result.id = Some(stmt.getGeneratedKeys.getInt(1))
+    }
   }
 
   def insert(admin: Admin): Unit = {
@@ -59,7 +62,9 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
     stmt.setString(2, admin.passwordSalt)
     stmt.setString(3, admin.passwordHash)
     stmt.execute()
-    admin.id = stmt.getGeneratedKeys.getInt(1)
+    if (stmt.getGeneratedKeys.next()) {
+      admin.id = stmt.getGeneratedKeys.getInt(1)
+    }
   }
 
   def insert(image: Image): Unit = {
@@ -71,7 +76,9 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
     stmt.setString(4, image.filename)
     stmt.setString(5, image.mimeType.orNull)
     stmt.execute()
-    image.id = stmt.getGeneratedKeys.getInt(1)
+    if (stmt.getGeneratedKeys.next()) {
+      image.id = stmt.getGeneratedKeys.getInt(1)
+    }
   }
 
   def insertOrUpdate(image: Image): Unit = {
@@ -172,7 +179,7 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
       surveys += extractSurvey(result)
     }
     surveys
-   }
+  }
 
   private def extractSurvey(result: ResultSet): Survey = {
     val id = result.getString("id")
