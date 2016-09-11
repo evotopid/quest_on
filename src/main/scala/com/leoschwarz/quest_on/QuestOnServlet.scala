@@ -64,12 +64,8 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
 
     log(s"saving survey result: $result")
 
-    //if (db.insert(result)) {
     db.insert(result)
     Ok("Survey results stored.")
-    //} else {
-    //  InternalServerError("Saving results failed.")
-    //}
   }
 
   get("/survey/:id.json") {

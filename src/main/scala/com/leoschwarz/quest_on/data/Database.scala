@@ -16,7 +16,7 @@ package com.leoschwarz.quest_on.data
 
 import java.io.File
 import java.net.URL
-import java.sql.{Blob, Connection, DriverManager, ResultSet, Statement, Timestamp}
+import java.sql.{Connection, DriverManager, ResultSet, Statement, Timestamp}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
@@ -251,14 +251,14 @@ object Database {
   val SchemaSqlite = Array(
     "CREATE TABLE IF NOT EXISTS surveys (id TEXT PRIMARY KEY, admin_id INT, data TEXT)",
     "CREATE TABLE IF NOT EXISTS admins  (id INTEGER PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
-    "CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS results (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, submitted_at TEXT, data TEXT)",
     "CREATE TABLE IF NOT EXISTS images  (id INTEGER PRIMARY KEY AUTOINCREMENT, survey_id TEXT, filename TEXT, mime_type TEXT, location TEXT, blob BLOB)"
   )
 
   val SchemaPostgres = Array(
     "CREATE TABLE IF NOT EXISTS surveys (id VARCHAR(64) PRIMARY KEY, admin_id INT, data TEXT)",
     "CREATE TABLE IF NOT EXISTS admins  (id SERIAL PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
-    "CREATE TABLE IF NOT EXISTS results (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)",
+    "CREATE TABLE IF NOT EXISTS results (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), submitted_at TEXT, data TEXT)",
     "CREATE TABLE IF NOT EXISTS images  (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), filename TEXT, mime_type VARCHAR(255), location TEXT, blob BYTEA)"
   )
 
