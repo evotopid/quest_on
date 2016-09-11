@@ -3,7 +3,7 @@ Quest_on is a web application allowing tailored to collecting advanced scientifi
 It provides features like time oriented surveying which are not frequently found in commercial
 competitior's products.
 
-# Running Locally
+# Running quest_on
 ## Hosted at Heroku
 The free tier of Heroku allows you to run your own instance of quest_on for your purposes.
 You might want to fork this repository to have direct control over the hosted code, please
