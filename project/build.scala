@@ -4,6 +4,7 @@ import org.scalatra.sbt._
 import org.scalatra.sbt.PluginKeys._
 import com.earldouglas.xwp.JettyPlugin
 import com.mojolly.scalate.ScalatePlugin._
+import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
 import ScalateKeys._
 
 object Quest_onBuild extends Build {
@@ -58,5 +59,5 @@ object Quest_onBuild extends Build {
         )
       }
     )
-  ).enablePlugins(JettyPlugin)
+  ).enablePlugins(JettyPlugin, JavaAppPackaging)
 }
