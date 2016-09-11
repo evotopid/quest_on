@@ -1,2 +1,3 @@
-/src/main/webapp/js/*.js linguist-vendored
+src/main/webapp/js/*.js linguist-vendored
+editor/scripts/*.js linguist-vendored
 
