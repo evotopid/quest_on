@@ -39,7 +39,7 @@ Attributes:
 
 Basically a page looks like this:
 
-```json
+```
 {
     "items": [page_item1, page_item2, ..., page_item100],
     "timelimit": { "group": null, "seconds": 5, "timeoutnotice": false },
@@ -112,3 +112,40 @@ Example:
 Note that answers are key value pairs. The key is the value that will be stored in the report while the value
 is the text displayed to the participant. Here thies means that "Yes", "No" and "Maybe" would be displayed
 in the survey while "1", "2", "3" would end up in the report.
+
+# Example Survey
+This is an example survey showcasing many of the previously explainded things in an example.
+You can copy this code to try it out on your instance of quest_on.
+
+```json
+{
+  "title": "Quest_on capability test",
+  "pages": [
+    {"items": [
+      {"type": "textmessage", "content": "Hello dear participant, please enter your code:"},
+      {"type": "textinput", "id": "field_code"}
+    ], "timelimit": null, "actions": ["continue"]},
+    
+    {"items": [
+      {"type": "textmessage", "content": "Showing a wonderful image for a couple seconds."},
+      {"type": "image", "path": "example1.png"},
+      {"type": "multiplechoice", "id": "rating1", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}
+    ], "timelimit": {"group": null, "seconds": 3, "timeoutnotice": true}, "actions": ["continue"]},
+    
+    {"items": [{"type": "image", "path": "example1.png"}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example2.png"}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example3.png"}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    
+    {"items": [
+      {"type": "textmessage", "content": "Now you can choose."},
+      {"id": "rating2", "type": "multiplechoice", "answers": {"A": "Apples","B": "Bananas"}}
+    ], "actions": ["continue"]},
+    
+    {"items": [{"type": "image", "path": "example1.png"}, {"type": "multiplechoice", "id": "rating3", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example2.png"}, {"type": "multiplechoice", "id": "rating4", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example3.png"}, {"type": "multiplechoice", "id": "rating5", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    
+    {"items": [{"type": "textmessage", "content": "Thank you very much for your participation."}], "actions": []}
+  ]
+}
+```
