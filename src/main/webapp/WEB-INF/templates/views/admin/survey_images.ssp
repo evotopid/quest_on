@@ -6,27 +6,33 @@
 
 ${include("/templates/include/admin_nav.ssp")}
 
-Existing images:
-<table>
-<tr>
-    <th>Filename</th>
-    <th>Location</th>
-    <th>Actions</th>
-</tr>
-#for (image <- images)
-<tr>
-    <td><%= image.filename %></td>
-    <td><%= image.location.toString %></td>
-    <td>
-        <a href="/admin/survey/<%= surveyId %>/images/edit/<%= image.id %>">Edit</a> •
-        <a href="/admin/survey/<%= surveyId %>/images/delete/<%= image.id %>">Delete</a>
-    </td>
-</tr>
+<h2>Existing images:</h2>
+
+#if (images.length > 0)
+    <table>
+    <tr>
+        <th>Filename</th>
+        <th>Location</th>
+        <th>Actions</th>
+    </tr>
+    #for (image <- images)
+    <tr>
+        <td><%= image.filename %></td>
+        <td><%= image.location.toString %></td>
+        <td>
+            <a href="/admin/survey/<%= surveyId %>/images/edit/<%= image.id %>">Edit</a> •
+            <a href="/admin/survey/<%= surveyId %>/images/delete/<%= image.id %>">Delete</a>
+        </td>
+    </tr>
+    #end
+    </table>
+#else
+    <p>No existing images. Add required images below.</p>
 #end
-</table>
+
 <br><br>
 
-Included in survey but missing images:
+<h2>Included in survey but missing images:</h2>
 <table>
 <tr>
     <th>Filename</th>
@@ -39,3 +45,7 @@ Included in survey but missing images:
 </tr>
 #end
 </table>
+
+<br><br>
+
+<a href="/admin/survey/<%=surveyId%>/images/add/image.jpg">Add Image</a>

@@ -39,3 +39,13 @@ table
 {
     border: 1px solid gray;
 }
+
+#container h1 {
+    margin-bottom: 5px;
+}
+
+#container nav {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
