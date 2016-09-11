@@ -10085,24 +10085,28 @@ return jQuery;
       }).done(function(images) {
         var image, remainingImages, src;
         remainingImages = images.length;
-        return window.loadingObjects = (function() {
-          var i, len, results;
-          results = [];
-          for (i = 0, len = images.length; i < len; i++) {
-            src = images[i];
-            image = new Image;
-            image.onload = function() {
-              remainingImages--;
-              if (remainingImages <= 0) {
-                cb();
-              }
-              return null;
-            };
-            image.src = src;
-            results.push(image);
-          }
-          return results;
-        })();
+        if (remainingImages === 0) {
+          return cb();
+        } else {
+          return window.loadingObjects = (function() {
+            var i, len, results;
+            results = [];
+            for (i = 0, len = images.length; i < len; i++) {
+              src = images[i];
+              image = new Image;
+              image.onload = function() {
+                remainingImages--;
+                if (remainingImages <= 0) {
+                  cb();
+                }
+                return null;
+              };
+              image.src = src;
+              results.push(image);
+            }
+            return results;
+          })();
+        }
       }).fail(function(error) {
         console.error("Preloading images failed:");
         console.error(error);

@@ -16,15 +16,18 @@ window.loadApplication = (surveyId, callback) ->
     loadImages = (cb) ->
         $.ajax(url: "/survey/#{surveyId}/images.json").done((images) ->
             remainingImages = images.length
-            window.loadingObjects = for src in images
-                image = new Image
-                image.onload = ->
-                    remainingImages--
-                    if remainingImages <= 0
-                        cb()
-                    null
-                image.src = src
-                image
+            if remainingImages == 0
+                cb()
+            else
+                window.loadingObjects = for src in images
+                    image = new Image
+                    image.onload = ->
+                        remainingImages--
+                        if remainingImages <= 0
+                            cb()
+                        null
+                    image.src = src
+                    image
         ).fail((error) ->
             console.error "Preloading images failed:"
             console.error error

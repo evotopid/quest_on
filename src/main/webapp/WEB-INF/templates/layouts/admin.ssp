@@ -11,6 +11,8 @@
     <title>quest_on admin area</title>
 </head>
 <body>
+    <h1 id="title">Admin Area</h1>
+
     <div id="container">
         #if (flash != null && flash.isDefinedAt("notice"))
             <div class="flash notice"><%= flash.get("notice") %></div>
