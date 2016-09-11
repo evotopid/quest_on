@@ -31,9 +31,12 @@ object Quest_onBuild extends Build {
         "org.scalatra" %% "scalatra-auth" % ScalatraVersion,
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
         "ch.qos.logback" % "logback-classic" % "1.1.5" % "runtime",
-        "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
         "org.json4s" %% "json4s-jackson" % "3.4.0",
+
+        // Jetty Server
+        "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "compile;container",
+        "org.eclipse.jetty" % "jetty-plus"   % "9.2.15.v20160210" % "compile;container",
 
         // YAML
         "org.yaml" % "snakeyaml" % "1.17",
