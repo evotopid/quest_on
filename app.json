@@ -7,6 +7,12 @@
         {
             "plan": "heroku-postgresql:hobby-dev"
         }
-    ]
+    ],
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
 }
 
