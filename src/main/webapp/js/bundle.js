@@ -10402,10 +10402,12 @@ return jQuery;
         results: JSON.stringify(this.getResults()),
         surveyId: this.id
       };
-      return $.post("/store", data).done(function() {
-        this.finished = true;
-        return $("#transfer_progress").html(_("Your answers have been submitted successfully."));
-      }).fail(function() {
+      return $.post("/store", data).done((function(_this) {
+        return function() {
+          _this.finished = true;
+          return $("#transfer_progress").html(_("Your answers have been submitted successfully."));
+        };
+      })(this)).fail(function() {
         return $("#transfer_progress").html(_("An error occured while submitting your answers.") + '<br><input type=\'button\' onclick=\'survey.submitResults();\' value=\'' + _('Try again') + '\'>');
       });
     };
