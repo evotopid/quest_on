@@ -2,7 +2,7 @@
 <%@ val resultsCount: Int %>
 <h1>Survey Results</h1>
 
-${include("/include/admin_nav.ssp")}
+${include("/templates/include/admin_nav.ssp")}
 
 <table>
 <tr>

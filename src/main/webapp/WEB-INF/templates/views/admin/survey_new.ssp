@@ -1,7 +1,7 @@
 <%@ val formError: String = null %>
 <h1>New Survey</h1>
 
-${include("/include/admin_nav.ssp")}
+${include("/templates/include/admin_nav.ssp")}
 
 #if (formError != null)
     <div class="error"><%= formError %></div>

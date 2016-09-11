@@ -1,7 +1,7 @@
 <%@ val surveys: scala.collection.mutable.ArrayBuffer[com.leoschwarz.quest_on.data.Survey] %>
 <h1>Dashboard</h1>
 
-${include("/include/admin_nav.ssp")}
+${include("/templates/include/admin_nav.ssp")}
 
 <h2>Surveys</h2>
 <table>

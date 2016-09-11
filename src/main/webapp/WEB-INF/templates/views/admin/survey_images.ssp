@@ -4,7 +4,7 @@
 
 <h1>Survey Images</h1>
 
-${include("/include/admin_nav.ssp")}
+${include("/templates/include/admin_nav.ssp")}
 
 Existing images:
 <table>
