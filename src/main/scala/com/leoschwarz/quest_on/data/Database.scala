@@ -238,7 +238,7 @@ object Database {
     "CREATE TABLE IF NOT EXISTS surveys (id VARCHAR(64) PRIMARY KEY, admin_id INT, data TEXT)",
     "CREATE TABLE IF NOT EXISTS admins  (id SERIAL PRIMARY KEY, email TEXT, password_salt TEXT, password_hash TEXT)",
     "CREATE TABLE IF NOT EXISTS results (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), submitted_at TIMESTAMP WITH TIME ZONE, data TEXT)",
-    "CREATE TABLE IF NOT EXISTS images  (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), filename TEXT, mime_type VARCHAR(255), location TEXT, blob BLOB)"
+    "CREATE TABLE IF NOT EXISTS images  (id SERIAL PRIMARY KEY, survey_id VARCHAR(64), filename TEXT, mime_type VARCHAR(255), location TEXT, blob BYTEA)"
   )
 
   def getDefault(): Database = {
