@@ -6,6 +6,19 @@ Readers are expected to be familiar with basic elements of JSON before reading f
 It's recommended using a good programming text editor of your choice.
 If you are unsure what to use you might want to try [Kate](https://kate-editor.org/) (runs on macOs, Windows & GNU/Linux).
 
+**Table of Contents**  (*generated with [DocToc](http://doctoc.herokuapp.com/)*)
+
+- [Survey Structure](#)
+- [Page object](#)
+	- [Last page](#)
+	- [Timelimit](#)
+- [Page Item](#)
+	- [textmessage](#)
+	- [textinput](#)
+	- [image](#)
+	- [multiplechoice](#)
+- [Example Survey](#)
+
 # Survey Structure
 The root element of a survey is a JSON object.
 It has a `title` attribute which is a string, and an attribute `pages` which is an array of page objects (described below).
