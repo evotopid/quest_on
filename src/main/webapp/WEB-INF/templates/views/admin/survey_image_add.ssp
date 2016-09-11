@@ -15,7 +15,8 @@ ${include("/templates/include/admin_nav.ssp")}
 </form>
 
 <h2>Local File</h2>
-<p>Upload an image to quest_on directly. Warning: only host small files, large files might slow down the server a lot.</p>
+<p>Upload an image to quest_on directly.<br>
+    <strong>Warning:</strong> only host small files, large files might slow down the server a lot.</p>
 <form method="POST" enctype="multipart/form-data">
     <input type="hidden" name="location" value="local">
     <label class="field">Filename:<br><input type="text" name="filename" value="<%= filename%>"></label>
