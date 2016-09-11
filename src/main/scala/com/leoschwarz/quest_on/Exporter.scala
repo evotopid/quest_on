@@ -33,7 +33,7 @@ class Exporter(private val results: IndexedSeq[Result]) {
     // Setup the header.
     implicit var row = sheet.createRow(0)
     setCell(0, "Submitted At")
-    if (results.length > 1) {
+    if (results.nonEmpty) {
       val data = results(0).parseData.get
       var i = 1
       for (key <- data.keys) {
