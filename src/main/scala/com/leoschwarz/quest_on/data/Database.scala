@@ -2,7 +2,7 @@ package com.leoschwarz.quest_on.data
 
 import java.io.File
 import java.net.URL
-import java.sql.{Blob, Connection, DriverManager, ResultSet, Timestamp}
+import java.sql.{Blob, Connection, DriverManager, ResultSet, Statement, Timestamp}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
@@ -44,7 +44,7 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
 
   def insert(result: Result): Unit = {
     val query = "INSERT INTO results (survey_id, submitted_at, data) VALUES (?, ?, ?)"
-    val stmt = connection.prepareStatement(query)
+    val stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
     stmt.setString(1, result.surveyId)
     stmt.setString(2, result.submittedAt.toString)
     stmt.setString(3, result.data)
@@ -54,7 +54,7 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
 
   def insert(admin: Admin): Unit = {
     val query = "INSERT INTO admins (email, password_salt, password_hash) VALUES (?, ?, ?)"
-    val stmt = connection.prepareStatement(query)
+    val stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
     stmt.setString(1, admin.email)
     stmt.setString(2, admin.passwordSalt)
     stmt.setString(3, admin.passwordHash)
@@ -64,7 +64,7 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
 
   def insert(image: Image): Unit = {
     val query = "INSERT INTO images (survey_id, location, blob, filename, mime_type) VALUES (?, ?, ?, ?, ?)"
-    val stmt = connection.prepareStatement(query)
+    val stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
     stmt.setString(1, image.surveyId)
     stmt.setString(2, image.location.toString)
     stmt.setBytes(3, image.blob.orNull)
