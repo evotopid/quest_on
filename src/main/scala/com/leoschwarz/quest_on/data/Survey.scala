@@ -14,14 +14,14 @@
 
 package com.leoschwarz.quest_on.data
 
-import com.leoschwarz.quest_on.data.survey_ast.{ImageMessage, SurveyData}
+import com.leoschwarz.quest_on.data.survey_ast.{ImageMessage, SurveyAST}
 import scala.collection.mutable.ArrayBuffer
 
 class Survey(var id: String,
              val adminId: Int,
              var data: String) {
 
-  lazy val ast = SurveyData.parse(data)
+  lazy val ast = SurveyAST.parse(data)
 
   def isValid = ast.isLeft
 

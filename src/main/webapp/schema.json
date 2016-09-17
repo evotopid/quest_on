@@ -120,10 +120,16 @@
                 },
                 "required": ["actions", "items", "timelimit"],
                 "additionalProperties": false
+            },
+            "options": {
+                "disable_collapse": true
             }
         }
     },
     "required": ["title", "pages"],
-    "additionalProperties": false
+    "additionalProperties": false,
+    "options": {
+        "disable_collapse": true
+    }
 }
 

@@ -1,0 +1,42 @@
+<%@ val formError: String = null %>
+<%@ val survey: com.leoschwarz.quest_on.data.Survey %>
+<h1>Edit Survey: <%= survey.id %></h1>
+
+${include("/templates/include/admin_nav.ssp")}
+
+#if (formError != null)
+    <div class="error"><%= formError %></div>
+#end
+
+<p style="color:red">Don't forget to save changes by pressing the save button. If it fails click edit JSON button and copy all of the text into a text file and try again using JSON edit.</p>
+<button class="button large" onclick="saveEditor();">Save Changes</button>
+
+<div id="gui-editor" style="text-align: left;"></div>
+
+<link rel="stylesheet" href="/css/foundation.min.css">
+
+<script>
+"use strict";
+
+$.ajax({
+    url: "/schema.json",
+    contentType: "json"
+}).done(function(schema) {
+    var element = document.getElementById("gui-editor");
+    window.editor = new JSONEditor(element, {
+        schema: schema,
+        theme: "foundation6"
+    });
+    window.editor.setValue(<%= unescape(survey.data) %>);
+}).fail(function() {
+    alert("Failed loading editor: schema missing.");
+});
+
+function saveEditor() {
+    var result = JSON.stringify(window.editor.getValue());
+    $.ajax({ url: "edit", method: "POST", data: { data: result }})
+        .done(function() { alert("Saved successfully"); })
+        .fail(function() { alert("Saving changes failed!"); });
+}
+
+</script>

@@ -26,7 +26,8 @@ ${include("/templates/include/admin_nav.ssp")}
         </td>
         <td>
             <a href="/survey/<%= survey.id %>">Launch</a> •
-            <a href="/admin/survey/<%= survey.id %>/edit">Edit</a> •
+            <a href="/admin/survey/<%= survey.id %>/edit">Edit (JSON)</a> •
+            <a href="/admin/survey/<%= survey.id %>/edit-gui">Edit (Graphical)</a> •
             <a href="/admin/survey/<%= survey.id %>/images">Images</a> •
             <a href="/admin/survey/<%= survey.id %>/results">Results</a>
         </td>

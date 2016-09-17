@@ -162,7 +162,7 @@ You can copy this code to try it out on your instance of quest_on.
     
     {"items": [
       {"type": "textmessage", "content": "Now you can choose."},
-      {"id": "rating2", "type": "multiplechoice", "answers": [{"value": "A", "key": "Apples"}, {"value": "B", "key": "Bananas"}]}
+      {"id": "rating2", "type": "multiplechoice", "answers": [{"value": "A", "text": "Apples"}, {"value": "B", "text": "Bananas"}]}
     ], "actions": ["continue"]},
     
     {"items": [{"type": "image", "path": "example1.png"}, {"type": "multiplechoice", "id": "rating3", "answers": [{"value":"good", "text":"I love it"}, {"value":"ok", "text":"It's ok"}, {"value":"bad", "text":"It's ugly"}]}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},

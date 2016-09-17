@@ -78,18 +78,18 @@ object PageItem {
 
         val answers = new mutable.HashMap[String, String]()
         obj \ "answers" match {
-          case arr: JArray => {
-            for (el <- arr) el match {
+          case JArray(elements) => {
+            for (el <- elements) el match {
               case answer: JObject => {
                 val value = answer \ "value" match {
-                  case JString(str) => str,
+                  case JString(str) => str
                   case _ => {
                     logger.failPageItem("MultipleChoice: one answer doesn't have value string", obj)
                     return None
                   }
                 }
                 val text = answer \ "text" match {
-                  case JString(str) => str,
+                  case JString(str) => str
                   case _ => {
                     logger.failPageItem("MultipleChoice: one answer doesn't have 'text' string", obj)
                     return None
@@ -102,7 +102,7 @@ object PageItem {
                 return None
               }
             }
-          },
+          }
           case _ => {
             logger.failPageItem("MultipleChoice: no 'answers' object.", obj)
             return None

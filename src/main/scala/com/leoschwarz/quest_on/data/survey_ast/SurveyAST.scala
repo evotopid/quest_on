@@ -20,13 +20,13 @@ import org.json4s.jackson.JsonMethods
 
 import scala.collection.mutable.ArrayBuffer
 
-class SurveyData (val title: String,
-                  val pages: IndexedSeq[Page]) {
+class SurveyAST(val title: String,
+                val pages: IndexedSeq[Page]) {
 
 }
 
-object SurveyData {
-  def parse(rawData: String): Either[SurveyData, ParserError] = {
+object SurveyAST {
+  def parse(rawData: String): Either[SurveyAST, ParserError] = {
     val logger = new ParserLogger
 
     val json = try {
@@ -70,6 +70,6 @@ object SurveyData {
         return Right(ParserError(logger))
       }
     }
-    Left(new SurveyData(title, pages))
+    Left(new SurveyAST(title, pages))
   }
 }
