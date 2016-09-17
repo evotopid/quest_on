@@ -11141,7 +11141,7 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
     }
 
     PageItem.prototype.getHTML = function() {
-      var answer, html;
+      var answer, html, i, len, ref;
       switch (this.type) {
         case 'textmessage':
           return "<div class='textmessage'>" + this.content + "</div>";
@@ -11149,7 +11149,9 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
           return "<div class='image'><img src='/survey/" + window.survey.id + "/img/" + this.path + "'></div>";
         case 'multiplechoice':
           html = '<div class="multiplechoice">';
-          for (answer in this.answers) {
+          ref = this.answers;
+          for (i = 0, len = ref.length; i < len; i++) {
+            answer = ref[i];
             html += "<label><input type='radio' name='" + this.id + "' value='" + answer.value + "'>" + answer.text + "</label><br>";
             html += '</div>';
           }

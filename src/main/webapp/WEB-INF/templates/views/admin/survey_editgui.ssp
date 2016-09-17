@@ -14,9 +14,18 @@ ${include("/templates/include/admin_nav.ssp")}
 <div id="gui-editor" style="text-align: left;"></div>
 
 <link rel="stylesheet" href="/css/foundation.min.css">
+<style>
+#container {
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+</style>
 
 <script>
 "use strict";
+
+JSONEditor.defaults.editors.object.options.disable_properties = true;
 
 $.ajax({
     url: "/schema.json",

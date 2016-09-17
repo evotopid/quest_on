@@ -28,7 +28,7 @@ class window.PageItem
                 "<div class='image'><img src='/survey/#{window.survey.id}/img/#{@path}'></div>"
             when 'multiplechoice'
                 html = '<div class="multiplechoice">'
-                for answer of @answers
+                for answer in @answers
                     html += "<label><input type='radio' name='#{@id}' value='#{answer.value}'>#{answer.text}</label><br>"
                     html += '</div>'
                 html

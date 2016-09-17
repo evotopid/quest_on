@@ -25,7 +25,14 @@
                                 "title": "Yes",
                                 "type": "object",
                                 "properties": {
-                                    "group": { "type": ["string", "null"], "default": null },
+                                    "group": {
+                                        "type": ["string", "null"],
+                                        "default": null,
+                                        "oneOf": [
+                                            { "title": "yes", "type": "string" },
+                                            { "title": "no", "type": "null" }
+                                        ]
+                                    },
                                     "seconds": { "type": "number", "default": 5 },
                                     "timeoutnotice": { "type": "boolean", "default": true }
                                 },
@@ -82,7 +89,10 @@
                                             "enum": ["image"],
                                             "options": { "hidden": true }
                                         },
-                                        "path": {"type": "string"}
+                                        "path": {
+                                            "type": "string",
+                                            "description": "Just enter the unique filename here. Later you have to upload the image in the images section that you'll find on the dashboard."
+                                        }
                                     },
                                     "required": ["type", "path"],
                                     "additionalProperties": false
@@ -129,7 +139,8 @@
     "required": ["title", "pages"],
     "additionalProperties": false,
     "options": {
-        "disable_collapse": true
+        "disable_collapse": true,
+        "disable_properties": true
     }
 }
 
