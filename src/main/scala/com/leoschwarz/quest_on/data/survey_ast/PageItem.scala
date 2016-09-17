@@ -14,7 +14,7 @@
 
 package com.leoschwarz.quest_on.data.survey_ast
 
-import org.json4s.JObject
+import org.json4s.{JArray, JObject}
 import org.json4s.JsonAST.JString
 
 import scala.collection.mutable
@@ -78,17 +78,31 @@ object PageItem {
 
         val answers = new mutable.HashMap[String, String]()
         obj \ "answers" match {
-          case JObject(elements) => {
-            for (el <- elements) {
-              answers += ((el._1, el._2 match {
-                case JString(str) => str
-                case _ => {
-                  logger.failPageItem("MultipleChoice: an answer value is not a string.", obj)
-                  return None
+          case arr: JArray => {
+            for (el <- arr) el match {
+              case answer: JObject => {
+                val value = answer \ "value" match {
+                  case JString(str) => str,
+                  case _ => {
+                    logger.failPageItem("MultipleChoice: one answer doesn't have value string", obj)
+                    return None
+                  }
                 }
-              }))
+                val text = answer \ "text" match {
+                  case JString(str) => str,
+                  case _ => {
+                    logger.failPageItem("MultipleChoice: one answer doesn't have 'text' string", obj)
+                    return None
+                  }
+                }
+                answers += ((value, text))
+              }
+              case _ => {
+                logger.failPageItem("MultipleChoice: one answer is not an object.", obj)
+                return None
+              }
             }
-          }
+          },
           case _ => {
             logger.failPageItem("MultipleChoice: no 'answers' object.", obj)
             return None

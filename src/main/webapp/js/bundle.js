@@ -10280,7 +10280,7 @@ return jQuery;
     }
 
     PageItem.prototype.getHTML = function() {
-      var answer_id, answer_text, html;
+      var answer, html;
       switch (this.type) {
         case 'textmessage':
           return "<div class='textmessage'>" + this.content + "</div>";
@@ -10288,14 +10288,13 @@ return jQuery;
           return "<div class='image'><img src='/survey/" + window.survey.id + "/img/" + this.path + "'></div>";
         case 'multiplechoice':
           html = '<div class="multiplechoice">';
-          for (answer_id in this.answers) {
-            answer_text = this.answers[answer_id];
-            html += "<label><input type='radio' name='" + this.id + "' value='" + answer_id + "'>" + answer_text + "</label><br>";
+          for (answer in this.answers) {
+            html += "<label><input type='radio' name='" + this.id + "' value='" + answer.value + "'>" + answer.text + "</label><br>";
             html += '</div>';
           }
           return html;
         case 'textinput':
-          return '<div class="textinput"><input type="text" name="' + this.id + '"></div>';
+          return "<div class='textinput'><input type='text' name='" + this.id + "'></div>";
         default:
           console.error('Trying to get HTML for unknown PageItem type: ' + this.type);
           return null;

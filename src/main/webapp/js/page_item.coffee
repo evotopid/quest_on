@@ -28,13 +28,12 @@ class window.PageItem
                 "<div class='image'><img src='/survey/#{window.survey.id}/img/#{@path}'></div>"
             when 'multiplechoice'
                 html = '<div class="multiplechoice">'
-                for answer_id of @answers
-                    answer_text = @answers[answer_id]
-                    html += "<label><input type='radio' name='#{@id}' value='#{answer_id}'>#{answer_text}</label><br>"
+                for answer of @answers
+                    html += "<label><input type='radio' name='#{@id}' value='#{answer.value}'>#{answer.text}</label><br>"
                     html += '</div>'
                 html
             when 'textinput'
-                '<div class="textinput"><input type="text" name="' + @id + '"></div>'
+                "<div class='textinput'><input type='text' name='#{@id}'></div>"
             else
                 console.error 'Trying to get HTML for unknown PageItem type: ' + @type
                 null
