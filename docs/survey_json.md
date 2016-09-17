@@ -119,12 +119,21 @@ The id should be unique so that the result can be identified in the report.
 
 Example:
 ```json
-{"id": "question1", "type": "multiplechoice", "answers": {"1": "Yes", "2": "No", "3": "Maybe"}}
+{
+  "id": "question1",
+  "type": "multiplechoice",
+  "answers": [
+    {"value": "1", "text": "Yes"},
+    {"value": "2", "text": "No"},
+    {"value": "3", "text": "Maybe"}
+  ]
+}
 ```
 
-Note that answers are key value pairs. The key is the value that will be stored in the report while the value
-is the text displayed to the participant. Here thies means that "Yes", "No" and "Maybe" would be displayed
-in the survey while "1", "2", "3" would end up in the report.
+Each answer is represented by a value and text. The text will be displayed to the user in the survey, while
+the key will be indicated in the report. Therefore it's essential to use **distinctive keys** for the individual
+answers.
+Here this means that "Yes", "No" and "Maybe" would be displayed to a survey participant, while "1", "2", "3" would end up in the report.
 
 # Example Survey
 This is an example survey showcasing many of the previously explainded things in an example.
@@ -142,7 +151,9 @@ You can copy this code to try it out on your instance of quest_on.
     {"items": [
       {"type": "textmessage", "content": "Showing a wonderful image for a couple seconds."},
       {"type": "image", "path": "example1.png"},
-      {"type": "multiplechoice", "id": "rating1", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}
+      {"type": "multiplechoice", "id": "rating1", "answers":
+        [{"value":"good", "text":"I love it"}, {"value":"ok", "text":"It's ok"}, {"value":"bad", "text":"It's ugly"}]
+      }
     ], "timelimit": {"group": null, "seconds": 3, "timeoutnotice": true}, "actions": ["continue"]},
     
     {"items": [{"type": "image", "path": "example1.png"}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
@@ -151,12 +162,12 @@ You can copy this code to try it out on your instance of quest_on.
     
     {"items": [
       {"type": "textmessage", "content": "Now you can choose."},
-      {"id": "rating2", "type": "multiplechoice", "answers": {"A": "Apples","B": "Bananas"}}
+      {"id": "rating2", "type": "multiplechoice", "answers": [{"value": "A", "key": "Apples"}, {"value": "B", "key": "Bananas"}]}
     ], "actions": ["continue"]},
     
-    {"items": [{"type": "image", "path": "example1.png"}, {"type": "multiplechoice", "id": "rating3", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
-    {"items": [{"type": "image", "path": "example2.png"}, {"type": "multiplechoice", "id": "rating4", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
-    {"items": [{"type": "image", "path": "example3.png"}, {"type": "multiplechoice", "id": "rating5", "answers": {"good": "I love it","ok": "It's ok", "bad": "It's ugly"}}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example1.png"}, {"type": "multiplechoice", "id": "rating3", "answers": [{"value":"good", "text":"I love it"}, {"value":"ok", "text":"It's ok"}, {"value":"bad", "text":"It's ugly"}]}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example2.png"}, {"type": "multiplechoice", "id": "rating4", "answers": [{"value":"good", "text":"I love it"}, {"value":"ok", "text":"It's ok"}, {"value":"bad", "text":"It's ugly"}]}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
+    {"items": [{"type": "image", "path": "example3.png"}, {"type": "multiplechoice", "id": "rating5", "answers": [{"value":"good", "text":"I love it"}, {"value":"ok", "text":"It's ok"}, {"value":"bad", "text":"It's ugly"}]}], "timelimit":{ "group":null, "seconds": 3, "timeoutnotice": false }, "actions": ["continue"]},
     
     {"items": [{"type": "textmessage", "content": "Thank you very much for your participation."}], "actions": []}
   ]
