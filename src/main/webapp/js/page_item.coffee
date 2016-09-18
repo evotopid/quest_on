@@ -34,6 +34,8 @@ class window.PageItem
                 html
             when 'textinput'
                 "<div class='textinput'><input type='text' name='#{@id}'></div>"
+            when 'pagestopwatch'
+                "<input type='hidden' name='#{@id}' value='#{new Date().getMilliseconds()}'>"
             else
                 console.error 'Trying to get HTML for unknown PageItem type: ' + @type
                 null
@@ -43,6 +45,11 @@ class window.PageItem
             { id: @id, value: $("input[name=#{@id}]", '#container').val() }
         else if @type == "multiplechoice"
             { id: @id, value: $("input[name=#{@id}]:checked", '#container').val() }
+        else if @type == "pagestopwatch"
+            stopTime = new Date().getMilliseconds()
+            startTime = $("input[name=#{@id}]", "#container").val()
+            time = (stopTime - startTime) * 0.001
+            { id: @id, value: time }
         else
             null
 

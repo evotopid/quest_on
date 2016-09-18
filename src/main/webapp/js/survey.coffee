@@ -74,9 +74,10 @@ class window.Survey
 
 # Prevent users from accidentally closing their browser's window.
 window.onbeforeunload = ->
-    if window.survey.finished
-        null
+    if window.survey?
+        if window.survey.finished
+            null
+        else
+            _ 'If you proceed closing this page, your results won\'t be stored.'
     else
-        _ 'If you proceed closing this page, your results won\'t be stored.'
-
-
+        null

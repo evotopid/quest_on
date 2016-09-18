@@ -36,13 +36,11 @@ Reports can be downloaded in the XLSX format, allowing for easy integration with
 At this time it is recommended to perform periodic downloads of your reports data as a safety premeasure against data loss.
 
 ## Survey Editing
-Currently a visual editor for surveys is not implemented yet.
-However it's possible to directly edit a survey's [JSON](https://en.wikipedia.org/wiki/JSON) representation.
+There is an experimental graphical editor for surveys available in the admin area. Please be sure to save regularily and perform offline backups of both surveys and reports to prevent data loss.
 
-As it's possible to make mistakes easily there is survey validation built into the admin dashboard.
-In case you are stuck feel free to open an issue with your survey JSON and validation output.
+It's also possible to directly edit the [JSON](https://en.wikipedia.org/wiki/JSON) format. For further information on the format or the different options available from the graphical editor, please consult [this reference](https://github.com/evotopid/quest_on/blob/master/docs/survey_json.md).
 
-Check [this reference](https://github.com/evotopid/quest_on/blob/master/docs/survey_json.md) for further information on how to write a survey.
+Shall you end up with an invalid survey and unable to figure out your mistake, feel free to open an issue with both your survey's JSON and validator output.
 
 ## Images
 In the survey it's possible to reference images. You only have to provide the filename in the survey file.

@@ -227,6 +227,13 @@ class Database(connection: Connection, schemaSetup: Array[String]) {
     }
   }
 
+  def deleteResults(survey: Survey): Unit = {
+    val query = "DELETE FROM results WHERE survey_id = ?"
+    val stmt = connection.prepareStatement(query)
+    stmt.setString(1, survey.id)
+    stmt.execute()
+  }
+
   def getResults(survey: Survey): ArrayBuffer[Result] = {
     val query = "SELECT * FROM results WHERE survey_id = ? ORDER BY submitted_at ASC"
     val stmt = connection.prepareStatement(query)

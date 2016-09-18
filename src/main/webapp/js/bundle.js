@@ -11158,6 +11158,8 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
           return html;
         case 'textinput':
           return "<div class='textinput'><input type='text' name='" + this.id + "'></div>";
+        case 'pagestopwatch':
+          return "<input type='hidden' name='" + this.id + "' value='" + (new Date().getMilliseconds()) + "'>";
         default:
           console.error('Trying to get HTML for unknown PageItem type: ' + this.type);
           return null;
@@ -11165,6 +11167,7 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
     };
 
     PageItem.prototype.getKeyValuePair = function() {
+      var startTime, stopTime, time;
       if (this.type === 'textinput') {
         return {
           id: this.id,
@@ -11174,6 +11177,14 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
         return {
           id: this.id,
           value: $("input[name=" + this.id + "]:checked", '#container').val()
+        };
+      } else if (this.type === "pagestopwatch") {
+        stopTime = new Date().getMilliseconds();
+        startTime = $("input[name=" + this.id + "]", "#container").val();
+        time = (stopTime - startTime) * 0.001;
+        return {
+          id: this.id,
+          value: time
         };
       } else {
         return null;
@@ -11279,10 +11290,14 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
   })();
 
   window.onbeforeunload = function() {
-    if (window.survey.finished) {
-      return null;
+    if (window.survey != null) {
+      if (window.survey.finished) {
+        return null;
+      } else {
+        return _('If you proceed closing this page, your results won\'t be stored.');
+      }
     } else {
-      return _('If you proceed closing this page, your results won\'t be stored.');
+      return null;
     }
   };
 

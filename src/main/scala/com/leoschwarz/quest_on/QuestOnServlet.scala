@@ -208,6 +208,12 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
     ssp("/admin/survey_editgui.ssp", "layout" -> AdminLayout, "survey" -> survey)
   }
 
+  get("/admin/survey/:id/delete-results") {
+    val (admin, survey) = adminSurveyAuth.get
+    db.deleteResults(survey)
+    redirect(s"/admin/survey/${survey.id}/results")
+  }
+
   get("/admin/survey/:id/results") {
     val (admin, survey) = adminSurveyAuth.get
     val resultCount = db.getResults(survey).length

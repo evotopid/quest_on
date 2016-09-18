@@ -135,6 +135,15 @@ the key will be indicated in the report. Therefore it's essential to use **disti
 answers.
 Here this means that "Yes", "No" and "Maybe" would be displayed to a survey participant, while "1", "2", "3" would end up in the report.
 
+## pagestopwatch
+Insert this item on a page to track the time a user spends on a given page. The unit of measurements is seconds.
+Like with other items that end up on the report it's important to assign a unique ID to this item as well.
+
+Example:
+```json
+{ "type": "pagestopwatch", "id": "page2_duration" }
+```
+
 # Example Survey
 This is an example survey showcasing many of the previously explainded things in an example.
 You can copy this code to try it out on your instance of quest_on.

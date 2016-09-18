@@ -25,6 +25,7 @@ case class TextMessage(content: String) extends PageItem
 case class TextInput(id: String) extends PageItem
 case class ImageMessage(path: String) extends PageItem
 case class MultipleChoiceInput(id: String, answers: mutable.HashMap[String, String]) extends PageItem
+case class PageStopwatch(id: String) extends PageItem
 
 object PageItem {
   def parse(obj: JObject, logger: ParserLogger): Option[PageItem] = {
@@ -110,6 +111,16 @@ object PageItem {
         }
 
         Some(MultipleChoiceInput(id, answers))
+      }
+      case "pagestopwatch" => {
+        val id = obj \ "id" match {
+          case JString(str) => str
+          case _ => {
+            logger.failPageItem("PageStopwatch: no 'id' string.", obj)
+            return None
+          }
+        }
+        Some(PageStopwatch(id))
       }
       case _ => {
         logger.failPageItem("Invalid item type.", obj)

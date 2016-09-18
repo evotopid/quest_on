@@ -17,4 +17,16 @@ ${include("/templates/include/admin_nav.ssp")}
     <th>Report</th>
     <td><a href="results.xlsx">Export Spreadsheet</a></td>
 </tr>
+<tr>
+    <th style="color:red">Delete Results</th>
+    <td><input type="button" value="Delete" onclick="deleteResults();"></td>
+</tr>
 </table>
+
+<script>
+function deleteResults() {
+    if (confirm("Do you really want to delete all current results of this survey? This action cannot be undone!")) {
+        window.location = "delete-results";
+    }
+}
+</script>

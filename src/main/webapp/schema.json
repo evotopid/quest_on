@@ -123,6 +123,16 @@
                                     },
                                     "required": ["type", "id", "answers"],
                                     "additionalProperties": false
+                                },
+                                {
+                                    "title": "Page Stopwatch",
+                                    "description": "Measures time a participant spends on a given page in seconds",
+                                    "properties": {
+                                        "type": { "enum": ["pagestopwatch"], "type": "string", "options": {"hidden": true} },
+                                        "id": { "type": "string" }
+                                    },
+                                    "required": ["type", "id"],
+                                    "additionalProperties": false
                                 }
                             ]
                         }
