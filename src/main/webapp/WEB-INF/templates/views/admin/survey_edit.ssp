@@ -12,6 +12,6 @@ ${include("/templates/include/admin_nav.ssp")}
 Identifier (part of URL): <%= survey.id %><br>
 
 <label for="input_data">Data (in JSON format)</label><br>
-<textarea name="data" id="input_data"><%= survey.data %></textarea><br>
+<textarea name="data" id="input_data"><%= survey.dataPretty %></textarea><br>
 <input type="submit" value="Save">
 </form>

@@ -15,6 +15,8 @@
 package com.leoschwarz.quest_on.data
 
 import com.leoschwarz.quest_on.data.survey_ast.{ImageMessage, SurveyAST}
+import org.json4s.jackson.JsonMethods
+
 import scala.collection.mutable.ArrayBuffer
 
 class Survey(var id: String,
@@ -47,6 +49,10 @@ class Survey(var id: String,
     }
 
     result
+  }
+
+  def dataPretty: String = {
+    JsonMethods.pretty(JsonMethods.parse(data))
   }
 }
 
