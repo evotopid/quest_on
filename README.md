@@ -26,10 +26,12 @@ $ ./sbt
 
 If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.
 
+If you want to have the server restart everytime there are modifications to any of the code, run `~jetty:start` from within SBT.
+
 # Administration
 ## Admin Area
 You can perform all relevant operations from the web-based admin area.
-Note that by default registration for new admins is enabled, however you might want to disable this for 
+Note that by default registration for new admins is enabled, however you might want to disable this for
 security reasons. To do this edit the file `/src/main/resources/config.yaml`.
 
 Reports can be downloaded in the XLSX format, allowing for easy integration with many office softwares.

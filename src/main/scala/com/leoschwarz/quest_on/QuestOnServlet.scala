@@ -173,13 +173,14 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
   }
 
   post("/admin/survey/new") {
-    // TODO proper survey validation?
     val admin = adminAuth().get
 
     // Make sure id is not taken already.
     val id = params("id")
     if (db.getSurveyById(id).isDefined) {
       ssp("/admin/survey_new.ssp", "layout" -> AdminLayout, "formError" -> "ID is already taken.")
+    } else if (id.isEmpty) {
+      ssp("/admin/survey_new.ssp", "layout" -> AdminLayout, "formError" -> "Please chose an ID (can't be empty).")
     } else if (!Survey.isValidId(id)) {
       ssp("/admin/survey_new.ssp", "layout" -> AdminLayout, "formError" -> "Invalid characters in ID.")
     } else {
@@ -315,6 +316,19 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
       db.delete(image)
       redirect(s"/admin/survey/${survey.id}/images")
     }
+  }
+
+  get("/admin/survey/:id/manage") {
+    val (admin, survey) = adminSurveyAuth.get
+    ssp("/admin/survey_manage.ssp", "layout" -> AdminLayout, "survey" -> survey)
+  }
+
+  post("/admin/survey/:id/delete") {
+    val (admin, survey) = adminSurveyAuth.get
+    db.deleteResults(survey)
+    db.deleteImages(survey)
+    db.deleteSurvey(survey)
+    redirect("/admin/dashboard")
   }
 
   /**

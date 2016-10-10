@@ -24,12 +24,13 @@ ${include("/templates/include/admin_nav.ssp")}
             #end
             <a>
         </td>
-        <td>
-            <a href="/survey/<%= survey.id %>">Launch</a> •
-            <a href="/admin/survey/<%= survey.id %>/edit">Edit (JSON)</a> •
-            <a href="/admin/survey/<%= survey.id %>/edit-gui">Edit (Graphical)</a> •
-            <a href="/admin/survey/<%= survey.id %>/images">Images</a> •
+        <td class="actions">
+            <a href="/survey/<%= survey.id %>">Launch</a>
+            <a href="/admin/survey/<%= survey.id %>/edit">Edit (JSON)</a>
+            <a href="/admin/survey/<%= survey.id %>/edit-gui">Edit (Graphical)</a>
+            <a href="/admin/survey/<%= survey.id %>/images">Images</a>
             <a href="/admin/survey/<%= survey.id %>/results">Results</a>
+            <a href="/admin/survey/<%= survey.id %>/manage">Manage</a>
         </td>
     </tr>
     #end

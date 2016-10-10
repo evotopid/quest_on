@@ -65,6 +65,6 @@ object Survey {
     */
   def isValidId(str: String): Boolean = {
     val regex = "[^a-zA-Z0-9_-]".r
-    regex.findFirstIn(str).isEmpty
+    regex.findFirstIn(str).isEmpty && !str.isEmpty
   }
 }

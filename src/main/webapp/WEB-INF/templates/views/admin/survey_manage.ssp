@@ -1,0 +1,20 @@
+<%@ val survey: com.leoschwarz.quest_on.data.Survey %>
+<h1>Manage Survey</h1>
+
+${include("/templates/include/admin_nav.ssp")}
+
+<p><strong>Survey ID:</strong> <%= survey.id %></p>
+<br>
+<p>
+Delete the Survey and all data (<span style="color:red">cannot be undone!)</span>:
+<input type="button" onclick="deleteSurvey('<%= survey.id %>')" value="DELETE">
+<form id="deleteForm" action="/admin/survey/<%= survey.id %>/delete" method="POST"></form>
+</p>
+
+<script>
+function deleteSurvey(id) {
+    if (confirm("Do you really want to delete survey " + id + " and all data? This cannot be undone.")) {
+        $("#deleteForm").submit();
+    }
+}
+</script>

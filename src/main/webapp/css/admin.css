@@ -40,6 +40,11 @@ table
     border: 1px solid gray;
 }
 
+.actions a {
+    display: block;
+    text-align: left;
+}
+
 #container h1 {
     margin-bottom: 5px;
 }
