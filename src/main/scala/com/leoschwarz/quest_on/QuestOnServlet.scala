@@ -121,7 +121,7 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
 
   post("/admin/login") {
     val password = params("password")
-    val admin = db.getAdminByEmail(params("email"))
+    val admin = db.getAdminByEmail(params("email").toLowerCase)
     if (admin.isDefined && admin.get.checkPassword(password)) {
       // Authentication successful.
       scentry.user = admin.get
@@ -143,7 +143,7 @@ class QuestOnServlet extends QuestOnStack with DatabaseAccess with Authenticatio
 
   post("/admin/register") {
     if (Config.get.registrationEnabled) {
-      val email = params("email")
+      val email = params("email").toLowerCase
       val password = params("password")
 
       // Validate for emptiness.
