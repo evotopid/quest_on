@@ -1,3 +1,6 @@
+# v3.1.1
+* Fix pagestopwatch collecting wrong time.
+
 # v3.1.0
 * Rearrange image upload.
 * Previously it was possible to create a survey with empty identifier. This is fixed now.

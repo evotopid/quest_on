@@ -11159,7 +11159,7 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
         case 'textinput':
           return "<div class='textinput'><input type='text' name='" + this.id + "'></div>";
         case 'pagestopwatch':
-          return "<input type='hidden' name='" + this.id + "' value='" + (new Date().getMilliseconds()) + "'>";
+          return "<input type='hidden' name='" + this.id + "' value='" + (+new Date()) + "'>";
         default:
           console.error('Trying to get HTML for unknown PageItem type: ' + this.type);
           return null;
@@ -11179,7 +11179,7 @@ c.on("change",function(){b.trigger("change")}),c.on("ready",function(){b.trigger
           value: $("input[name=" + this.id + "]:checked", '#container').val()
         };
       } else if (this.type === "pagestopwatch") {
-        stopTime = new Date().getMilliseconds();
+        stopTime = +new Date();
         startTime = $("input[name=" + this.id + "]", "#container").val();
         time = (stopTime - startTime) * 0.001;
         return {
